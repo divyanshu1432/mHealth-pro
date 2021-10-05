@@ -12,17 +12,14 @@ import LogoPng from '../../assets/logo.png';
 import HomePageCarousel from '../HomePageCarousel';
 
 const UpcomingEvents = (props) => {
-
   const link = window.location.href;
-  const f_link = link.substring(0, 22) 
+  const f_link = link.substring(0, 22);
 
-useEffect(() => {
-  if(f_link === 'https://global.mhealth'){
-    setCode('GLOBAL')
-  
-
-}
-} , [])
+  useEffect(() => {
+    if (f_link === 'https://global.mhealth') {
+      setCode('GLOBAL');
+    }
+  }, []);
 
   const [code, setCode] = useState('');
   const history = useHistory();
@@ -30,7 +27,7 @@ useEffect(() => {
   const [upcomingEventList, setUpcomingEventList] = useState([]);
   const [registerModalView, setRegisterModalView] = useState(false);
   const [instructionDetails, setInstructionDetails] = useState();
- 
+
   useEffect(() => {
     getOldEvents()
       .then((res) => {
@@ -52,7 +49,7 @@ useEffect(() => {
         setUpcomingEventListLoader(false);
       });
   }, []);
-console.warn(window.banner , 'banner')
+  console.warn(window.banner, 'banner');
   useEffect(() => {
     if (history.location.search) {
       let params = new URLSearchParams(history.location.search.substring(1));
@@ -82,9 +79,8 @@ console.warn(window.banner , 'banner')
     .filter((item) => item.challegeBanner)
     .map((item) => item.challegeBanner);
 
-
-    const hyperlink = window.location.href;
-    const uplink = hyperlink.substring(0, 22);
+  const hyperlink = window.location.href;
+  const uplink = hyperlink.substring(0, 22);
 
   const getUpcomingEventList = () => {
     if (code == '') {
@@ -140,9 +136,7 @@ console.warn(window.banner , 'banner')
             label="Search by code"
             variant="outlined"
             margin="dense"
-          
             onChange={handleChange}
-           
           />
           <button
             onClick={() => {
@@ -154,59 +148,43 @@ console.warn(window.banner , 'banner')
         </div>
       </header>
       <div className="upcoming-event-hero">
-
-        
         {
-        
-        // console.log(heroImageArray , 'image')
-        (window.banner != null) ? (
-          <div style={{width: '100%'}}>
-            <img
-              src={window.banner}
+          // console.log(heroImageArray , 'image')
+          window.banner != null ? (
+            <div style={{width: '100%'}}>
+              <img src={window.banner} style={{width: '100%'}} />
+            </div>
+          ) : heroImageArray && heroImageArray.length > 0 ? (
+            <Carousel
+              showThumbs={false}
               style={{width: '100%'}}
-            />
-          </div>
-        )
-
-:
-        
-        heroImageArray && heroImageArray.length > 0 ? (
-          <Carousel
-            showThumbs={false}
-            style={{width: '100%'}}
-            autoPlay={true}
-            swipeable={true}
-            dynamicHeight={true}
-            infiniteLoop={true}
-            showArrows={false}
-            interval={3000}
-          >
-            { heroImageArray.map((item) => {
-              
-              return (
-                <div style={{width: '100%'}}>
-                  
-                  <img src={item} style={{width: '100%'}} />
-                </div>
-              );
-            })}
-          </Carousel>
-        )
-        
-  
- 
-        : (
-          <div style={{width: '100%'}}>
-            <img
-              src="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/W21Banner.jpeg"
-              style={{width: '100%'}}
-            />
-          </div>
-        )}
+              autoPlay={true}
+              swipeable={true}
+              dynamicHeight={true}
+              infiniteLoop={true}
+              showArrows={false}
+              interval={3000}
+            >
+              {heroImageArray.map((item) => {
+                return (
+                  <div style={{width: '100%'}}>
+                    <img src={item} style={{width: '100%'}} />
+                  </div>
+                );
+              })}
+            </Carousel>
+          ) : (
+            <div style={{width: '100%'}}>
+              <img
+                src="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/W21Banner.jpeg"
+                style={{width: '100%'}}
+              />
+            </div>
+          )
+        }
       </div>
       <div className="upcoming-event-intro">
-        <div className="upcoming-event-heading">
-       </div>
+        <div className="upcoming-event-heading"></div>
       </div>
       <div className="upcoming-event-list">
         {upcomingEventListLoader ? (

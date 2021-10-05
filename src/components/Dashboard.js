@@ -225,6 +225,7 @@ const Dashboard = () => {
       if (res.data.response.responseMessage === 'SUCCESS') {
         let event = res.data.response.responseData?.keyword.eventId;
         seteventId(event);
+        console.log(event, 'event');
         let selectedEventFromMainPage =
           res.data.response.responseData?.events?.filter(
             (item) => item.id == localStorage.challengeIDRegister
@@ -240,10 +241,10 @@ const Dashboard = () => {
                 item.timePeriod === 'FUTURE' &&
                 item.isParticipated
                 ? true
-                : event != null
+                : event !== null
                 ? (item.eventView !== 'LINKED' &&
                     item.eventView !== 'PRIVATE') ||
-                  (item.id == event && item.timePeriod !== 'FUTURE')
+                  (item.id == event && item.timePeriod === 'FUTURE')
                 : item.eventView !== 'PRIVATE' &&
                   item.eventView !== 'LINKED' &&
                   item.timePeriod === 'FUTURE';
@@ -253,10 +254,10 @@ const Dashboard = () => {
                 item.timePeriod !== 'FUTURE' &&
                 item.isParticipated
                 ? true
-                : event != null
+                : event !== null
                 ? (item.eventView !== 'LINKED' &&
                     item.eventView !== 'PRIVATE') ||
-                  (item.id == event && item.timePeriod !== 'FUTURE')
+                  (item.id == event && item.timePeriod === 'FUTURE')
                 : item.eventView !== 'PRIVATE' &&
                   item.eventView !== 'LINKED' &&
                   item.timePeriod !== 'FUTURE';
@@ -778,29 +779,10 @@ const Dashboard = () => {
                   item.timePeriod === 'FUTURE' &&
                   item.isParticipated
                 ? true
-                : window.location.href ==
-                  'https://global.mhealth.ai/#/dashboard'
+                : eventId !== null
                 ? (item.eventView !== 'LINKED' &&
                     item.eventView !== 'PRIVATE') ||
-                  (item.id == 38 && item.timePeriod === 'FUTURE')
-                : eventI != null
-                ? (item.eventView !== 'LINKED' &&
-                    item.eventView !== 'PRIVATE') ||
-                  (item.id === eventId && item.timePeriod !== 'FUTURE')
-                : window.location.href ==
-                  'https://vanderlande.mhealth.ai/#/dashboard'
-                ? (item.eventView !== 'LINKED' &&
-                    item.eventView !== 'PRIVATE') ||
-                  (item.id === 43 && item.timePeriod == 'FUTURE')
-                : window.location.href == 'https://osv.mhealth.ai/#/dashboard'
-                ? (item.eventView !== 'LINKED' &&
-                    item.eventView !== 'PRIVATE') ||
-                  (item.id === 45 && item.timePeriod == 'FUTURE')
-                : window.location.href ==
-                  'https://thecrest.mhealth.ai/#/dashboard'
-                ? (item.eventView !== 'LINKED' &&
-                    item.eventView !== 'PRIVATE') ||
-                  (item.id == 44 && item.timePeriod !== 'FUTURE')
+                  (item.id === eventId && item.timePeriod === 'FUTURE')
                 : item.eventView !== 'PRIVATE' &&
                   item.eventView !== 'LINKED' &&
                   item.timePeriod === 'FUTURE';
@@ -898,15 +880,9 @@ const Dashboard = () => {
           item.timePeriod !== 'FUTURE' &&
           item.isParticipated
           ? true
-          : window.location.href == 'https://global.mhealth.ai/#/dashboard'
+          : eventId !== null
           ? (item.eventView !== 'LINKED' && item.eventView !== 'PRIVATE') ||
-            (item.id == 38 && item.timePeriod !== 'FUTURE')
-          : eventId != null
-          ? (item.eventView !== 'LINKED' && item.eventView !== 'PRIVATE') ||
-            (item.id == eventId && item.timePeriod !== 'FUTURE')
-          : window.location.href == 'https://thecrest.mhealth.ai/#/dashboard'
-          ? (item.eventView !== 'LINKED' && item.eventView !== 'PRIVATE') ||
-            (item.id == 44 && item.timePeriod !== 'FUTURE')
+            (item.id == eventId && item.timePeriod === 'FUTURE')
           : item.eventView !== 'PRIVATE' &&
             item.eventView !== 'LINKED' &&
             item.timePeriod !== 'FUTURE';
@@ -917,15 +893,9 @@ const Dashboard = () => {
             item.timePeriod === 'FUTURE' &&
             item.isParticipated
           ? true
-          : window.location.href == 'https://global.mhealth.ai/#/dashboard'
+          : eventId !== null
           ? (item.eventView !== 'LINKED' && item.eventView !== 'PRIVATE') ||
-            (item.id == 38 && item.timePeriod !== 'FUTURE')
-          : eventId != null
-          ? (item.eventView !== 'LINKED' && item.eventView !== 'PRIVATE') ||
-            (item.id == eventId && item.timePeriod !== 'FUTURE')
-          : window.location.href == 'https://thecrest.mhealth.ai/#/dashboard'
-          ? (item.eventView !== 'LINKED' && item.eventView !== 'PRIVATE') ||
-            (item.id == 44 && item.timePeriod !== 'FUTURE')
+            (item.id == eventId && item.timePeriod === 'FUTURE')
           : item.eventView !== 'PRIVATE' &&
             item.eventView !== 'LINKED' &&
             item.timePeriod === 'FUTURE';

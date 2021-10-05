@@ -1,6 +1,9 @@
 import React, {useEffect, useState, useCallback} from 'react';
 import {useTheme} from '@material-ui/core/styles';
 import Popup from './Popup';
+import EditIcon from '@material-ui/icons/EditOutlined';
+import DoneIcon from '@material-ui/icons/DoneAllTwoTone';
+import Input from '@material-ui/core/Input';
 // import Event from './Event'
 // import 'bootstrap/dist/css/bootstrap.rtl.min.css';
 // import ImageViewer from 'react-simple-image-viewer';
@@ -48,11 +51,76 @@ import Tooltip from '@material-ui/core/Tooltip';
 import {Edit} from 'react-feather';
 import {CSVLink} from 'react-csv';
 import {urlPrefix, secretToken} from '../services/apicollection';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+    marginTop: theme.spacing(3),
+    overflowX: 'auto',
+  },
+  table: {
+    minWidth: 650,
+  },
+  selectTableCell: {
+    width: 30,
+  },
+  tableCell: {
+    width: 130,
+    height: 40,
+  },
+  input: {
+    width: 50,
+    height: 40,
+  },
+}));
+
+const CustomTableCell = ({item, name, onChange}) => {
+  const classes = useStyles();
+  const {isEditMode} = item;
+  return (
+    <TableCell align="left" className={classes.tableCell}>
+      {isEditMode ? (
+        <Input
+          value={item[name]}
+          name={name}
+          onChange={(e) => onChange(e, item)}
+          className={classes.input}
+        />
+      ) : (
+        item[name]
+      )}
+    </TableCell>
+  );
+};
+
 const AuditReport = (props) => {
   const [Event, setEvent] = useState();
   const [data, setData] = useState([]);
   const geteventrlist = () => {
+    // const adminurl = `${urlPrefix}clients/getAllEvents?others=performance&userId=${localStorage.getItem(
+    //   'userId'
+    // )}`;
+
+    // return axios
+    //   .get(adminurl, {
+    //     headers: {
+    //       Authorization: `Bearer ${secretToken}`,
+    //       timeStamp: 'timestamp',
+    //       accept: '*/*',
+    //       'Access-Control-Allow-Origin': '*',
+    //       withCredentials: true,
+    //       'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
+    //       'Access-Control-Allow-Headers':
+    //         'accept, content-type, x-access-token, x-requested-with',
+    //     },
+    //   })
+    //   .then((res) => {
+    //     {
+    //       res.data.response.responseData
     setData(props.events);
+    //       : '';
+    //   }
+    // });
   };
   const [player, setPlayer] = useState([]);
 
@@ -78,7 +146,7 @@ const AuditReport = (props) => {
         {
           res.data.response.responseData
             ? setPlayer(res.data.response.responseData)
-            : message.error(res.data.response.responseMessage);
+            : Message.error(res.data.response.responseMessage);
         }
       });
   };
@@ -125,6 +193,60 @@ const AuditReport = (props) => {
         }
       });
   }
+
+  const [EditId, setEditId] = useState();
+  const [EditValue, setEditValue] = useState();
+  const [EditData, setEditData] = useState();
+  const [previous, setPrevious] = React.useState({});
+  const onToggleEditMode = (id) => {
+    setItems((state) => {
+      return items.map((row) => {
+        if (row.id === id) {
+          return {...row, isEditMode: !row.isEditMode};
+        }
+        return row;
+      });
+    });
+    axios
+      .put(
+        `${urlPrefix}v1.0/editOcrFailedStatus?id=${EditId}&value=${EditValue}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            timeStamp: 'timestamp',
+            accept: '*/*',
+            'Access-Control-Allow-Origin': '*',
+            withCredentials: true,
+            'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
+            'Access-Control-Allow-Headers':
+              'accept, content-type, x-access-token, x-requested-with',
+          },
+        }
+      )
+      .then((res) => {});
+  };
+
+  const onChange = (e, row) => {
+    if (!previous[row.id]) {
+      setPrevious((state) => ({...state, [row.id]: row}));
+    }
+    const value = e.target.value;
+    console.log(value);
+    setEditValue(value);
+    const name = e.target.name;
+    console.log(name);
+    const {id} = row;
+    // console.log(id)
+    setEditId(id);
+    const newRows = items.map((row) => {
+      if (row.id === id) {
+        return {...row, [name]: value};
+      }
+      return row;
+    });
+    setItems(newRows);
+  };
 
   console.log(items);
   const [currentImage, setCurrentImage] = useState('');
@@ -465,7 +587,11 @@ const AuditReport = (props) => {
                     {data &&
                       data.map(function (ev, index) {
                         return (
-                          <MenuItem required value={ev.id}>
+                          <MenuItem
+                            required
+                            style={{fontSize: 12}}
+                            value={ev.id}
+                          >
                             {ev.challengeName}
                           </MenuItem>
                         );
@@ -495,7 +621,11 @@ const AuditReport = (props) => {
                     {player &&
                       player.map(function (ev, index) {
                         return (
-                          <MenuItem required value={ev.mstUserId}>
+                          <MenuItem
+                            required
+                            style={{fontSize: 12}}
+                            value={ev.mstUserId}
+                          >
                             {ev.name}
                           </MenuItem>
                         );
@@ -678,20 +808,35 @@ const AuditReport = (props) => {
                               handleClose={togglePopup}
                             />
                           )}
-                          <TableCell align="center" style={{fontSize: 12}}>
-                            {item.leaderBoardValue}
+                          <TableCell align="center">
+                            <CustomTableCell
+                              {...{item, name: 'leaderBoardValue', onChange}}
+                            />
                           </TableCell>
                           <TableCell align="center" style={{fontSize: 12}}>
                             {item.ocrVerified}
                           </TableCell>
-                          <TableCell align="center" style={{fontSize: 12}}>
-                            <Edit
-                              size={12}
-                              style={{
-                                color: '#069b3f',
-                                cursor: 'pointer',
-                              }}
-                            />
+                          <TableCell
+                            align="center"
+                            className={classes.selectTableCell}
+                          >
+                            {item.isEditMode ? (
+                              <>
+                                <IconButton
+                                  aria-label="done"
+                                  onClick={() => onToggleEditMode(item.id)}
+                                >
+                                  <DoneIcon />
+                                </IconButton>
+                              </>
+                            ) : (
+                              <IconButton
+                                aria-label="delete"
+                                onClick={() => onToggleEditMode(item.id)}
+                              >
+                                <EditIcon />
+                              </IconButton>
+                            )}
                           </TableCell>
                         </TableRow>
                       );

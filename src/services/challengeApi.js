@@ -131,45 +131,36 @@ function isLoggedIn() {
   return false;
 }
 
-
-
 export const getAchievements = () => {
-
-const URL  = `${urlPrefix}clients/getAchievementIcons`
-return axios.get(URL, {
-  headers: {
-    Authorization: `Bearer ${secretToken}`,
-    timeStamp: 'timestamp',
-    accept: '*/*',
-    'Access-Control-Allow-Origin': '*',
-    withCredentials: true,
-    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
-    'Access-Control-Allow-Headers':
-      'accept, content-type, x-access-token, x-requested-with',
-  },
-});
-
-
-}
-
+  const URL = `${urlPrefix}clients/getAchievementIcons`;
+  return axios.get(URL, {
+    headers: {
+      Authorization: `Bearer ${secretToken}`,
+      timeStamp: 'timestamp',
+      accept: '*/*',
+      'Access-Control-Allow-Origin': '*',
+      withCredentials: true,
+      'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
+      'Access-Control-Allow-Headers':
+        'accept, content-type, x-access-token, x-requested-with',
+    },
+  });
+};
 
 export const getOldEvents = () => {
-
   let str = window.location.href;
-let link = str.length;
-let final_link = str.substr(8, link-31)
+  let link = str.length;
+  let final_link = str.substr(8, link - 31);
 
-
-let bannerLink = window.location.href;
-let a_link = bannerLink.length;
-let banner = bannerLink.substr(8, a_link-22)
-
+  let bannerLink = window.location.href;
+  let a_link = bannerLink.length;
+  let banner = bannerLink.substr(8, a_link - 22);
 
   const URL = isLoggedIn()
-  ? `${urlPrefix}${getAllEvents}?others=${final_link}&userId=${localStorage.getItem(
-    "userId"
-  )}`
-: `${urlPrefix}${getAllEvents}?others=${banner}&userId=559`;
+    ? `${urlPrefix}${getAllEvents}?others=target&userId=${localStorage.getItem(
+        'userId'
+      )}`
+    : `${urlPrefix}${getAllEvents}?others=target&userId=559`;
   return axios.get(URL, {
     headers: {
       Authorization: `Bearer ${secretToken}`,
@@ -274,7 +265,7 @@ export const getAuthLink = (datasource) => {
 
 export const sendSms = (smsObj) => {
   const URL = `${urlPrefix}${sendSmsApi}`;
-    let message = `Congratulations! You have successfully registered in ${smsObj.eventName}. You may subscribe to any of ongoing programs. Team mHealth`;
+  let message = `Congratulations! You have successfully registered in ${smsObj.eventName}. You may subscribe to any of ongoing programs. Team mHealth`;
 
   let payload = {
     message: message,

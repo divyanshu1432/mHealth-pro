@@ -1,0 +1,92 @@
+{
+  "name": "mhealth-ai",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@fortawesome/react-fontawesome": "^0.1.14",
+    "@material-ui/core": "^4.11.2",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.57",
+    "@material-ui/pickers": "^3.2.10",
+    "@material/card": "^13.0.0",
+    "@wojtekmaj/react-daterange-picker": "^3.2.0",
+    "antd-message": "^1.0.10",
+    "apexcharts": "^3.23.0",
+    "axios": "^0.21.1",
+    "bootstrap": "^4.6.0",
+    "canvas-confetti": "^1.3.2",
+    "classnames": "^2.2.6",
+    "font-awesome": "^4.7.0",
+    "material-table": "^1.69.2",
+    "moment": "^2.29.1",
+    "notistack": "^1.0.3",
+    "react": "16.14.0",
+    "react-alert": "^7.0.3",
+    "react-apexcharts": "^1.3.7",
+    "react-bootstrap": "^1.6.1",
+    "react-bootstrap-table-next": "^4.0.3",
+    "react-csv": "^2.0.3",
+    "react-dom": "16.14.0",
+    "react-feather": "^2.0.9",
+    "react-google-charts": "^3.0.15",
+    "react-icons": "^4.1.0",
+    "react-loading": "^2.0.3",
+    "react-modal": "^3.14.3",
+    "react-otp-input": "^2.3.0",
+    "react-rating-stars-component": "^2.2.0",
+    "react-responsive-carousel": "^3.2.13",
+    "react-responsive-modal": "^6.1.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.1",
+    "react-spring": "^8.0.27",
+    "react-star-ratings": "^2.3.0",
+    "react-switch": "6.0.0",
+    "react-tabs": "^3.2.2",
+    "react-tooltip": "^4.2.21",
+    "react-use": "^15.3.4",
+    "reactjs-alert": "^1.2.5",
+    "styled-components": "^5.2.1",
+    "swr": "^0.3.11"
+  },
+  "devDependencies": {
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
+    "prettier": "^2.0.5",
+    "react-phone-input-2": "^2.13.9"
+  },
+  "scripts": {
+    "start": "set REACT_APP_ENV=staging && react-scripts start",
+    "start:prod": "set REACT_APP_ENV=production && react-scripts start",
+    "build:staging": "set REACT_APP_ENV=staging && react-scripts build",
+    "build:production": "set REACT_APP_ENV=production && react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.+(js|jsx)": [
+      "prettier --write \"**/*.+(js|jsx)\""
+    ],
+    "*.+(json|yml|yaml|md)": [
+      "prettier --write \"**/*.+(json|yml|yaml|md)\""
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

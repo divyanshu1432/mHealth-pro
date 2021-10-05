@@ -41,7 +41,13 @@ const SundayChallenge = () => {
           </CardActions>
         </Card>{' '}
         <Card style={{maxWidth: 370}}>
-          <CardHeader style={{background: '#518ad6', borderRadius: '10px'}}>
+          <CardHeader
+            style={{
+              background: '#518ad6',
+              borderTopLeftRadius: '10px',
+              borderTopRightRadius: '10px',
+            }}
+          >
             {' '}
           </CardHeader>
           <CardContent>
@@ -59,7 +65,13 @@ const SundayChallenge = () => {
           </CardActions>
         </Card>{' '}
         <Card style={{maxWidth: 370}}>
-          <CardHeader style={{background: '#518ad6', borderRadius: '10px'}}>
+          <CardHeader
+            style={{
+              background: '#518ad6',
+              borderTopLeftRadius: '10px',
+              borderTopRightRadius: '10px',
+            }}
+          >
             {' '}
           </CardHeader>
           <CardContent>

@@ -16,7 +16,7 @@ const SundayChallenge = () => {
           marginTop: 15,
         }}
       >
-        <Card style={{maxWidth: 345}}>
+        <Card style={{maxWidth: 370}}>
           <CardHeader
             style={{
               background: '#518ad6',
@@ -40,7 +40,7 @@ const SundayChallenge = () => {
           <Button size="small">Learn More</Button> */}
           </CardActions>
         </Card>{' '}
-        <Card style={{maxWidth: 345}}>
+        <Card style={{maxWidth: 370}}>
           <CardHeader style={{background: '#518ad6', borderRadius: '10px'}}>
             {' '}
           </CardHeader>
@@ -58,7 +58,7 @@ const SundayChallenge = () => {
           <Button size="small">Learn More</Button> */}
           </CardActions>
         </Card>{' '}
-        <Card style={{maxWidth: 345}}>
+        <Card style={{maxWidth: 370}}>
           <CardHeader style={{background: '#518ad6', borderRadius: '10px'}}>
             {' '}
           </CardHeader>

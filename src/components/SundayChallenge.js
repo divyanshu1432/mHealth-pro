@@ -25,11 +25,16 @@ const SundayChallenge = () => {
             }}
           >
             {' '}
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="div"
+              style={{display: 'flex', justifyContent: 'center'}}
+            >
+              Distance
+            </Typography>
           </CardHeader>
           <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-              Lizard
-            </Typography>
             <Typography variant="body2" color="text.secondary">
               Lizards are a widespread group of squamate reptiles, with over
               6,000 species, ranging across all continents except Antarctica
@@ -48,12 +53,16 @@ const SundayChallenge = () => {
               borderTopRightRadius: '10px',
             }}
           >
-            {' '}
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="div"
+              style={{display: 'flex', justifyContent: 'center'}}
+            >
+              Distance
+            </Typography>{' '}
           </CardHeader>
           <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-              Lizard
-            </Typography>
             <Typography variant="body2" color="text.secondary">
               Lizards are a widespread group of squamate reptiles, with over
               6,000 species, ranging across all continents except Antarctica
@@ -67,17 +76,15 @@ const SundayChallenge = () => {
         <Card style={{maxWidth: 370}}>
           <CardHeader
             style={{
-              background: '#518ad6',
               borderTopLeftRadius: '10px',
               borderTopRightRadius: '10px',
             }}
           >
-            {' '}
+            <div>
+              <h1>Distance</h1>{' '}
+            </div>
           </CardHeader>
           <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-              Lizard
-            </Typography>
             <Typography variant="body2" color="text.secondary">
               Lizards are a widespread group of squamate reptiles, with over
               6,000 species, ranging across all continents except Antarctica

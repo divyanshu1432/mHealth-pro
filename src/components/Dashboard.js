@@ -244,7 +244,8 @@ const Dashboard = () => {
                 : event !== null
                 ? (item.eventView !== 'LINKED' &&
                     item.eventView !== 'PRIVATE') ||
-                  (item.id == event && item.timePeriod === 'FUTURE')
+                  (item.id == event && item.timePeriod === 'FUTURE') ||
+                  (item.id == event && item.timePeriod === 'CURRENT')
                 : item.eventView !== 'PRIVATE' &&
                   item.eventView !== 'LINKED' &&
                   item.timePeriod === 'FUTURE';
@@ -257,7 +258,8 @@ const Dashboard = () => {
                 : event !== null
                 ? (item.eventView !== 'LINKED' &&
                     item.eventView !== 'PRIVATE') ||
-                  (item.id == event && item.timePeriod === 'FUTURE')
+                  (item.id == event && item.timePeriod === 'FUTURE') ||
+                  (item.id == event && item.timePeriod === 'CURRENT')
                 : item.eventView !== 'PRIVATE' &&
                   item.eventView !== 'LINKED' &&
                   item.timePeriod !== 'FUTURE';
@@ -782,7 +784,8 @@ const Dashboard = () => {
                 : eventId !== null
                 ? (item.eventView !== 'LINKED' &&
                     item.eventView !== 'PRIVATE') ||
-                  (item.id === eventId && item.timePeriod === 'FUTURE')
+                  (item.id === eventId && item.timePeriod === 'FUTURE') ||
+                  (item.id == eventId && item.timePeriod === 'CURRENT')
                 : item.eventView !== 'PRIVATE' &&
                   item.eventView !== 'LINKED' &&
                   item.timePeriod === 'FUTURE';
@@ -882,7 +885,8 @@ const Dashboard = () => {
           ? true
           : eventId !== null
           ? (item.eventView !== 'LINKED' && item.eventView !== 'PRIVATE') ||
-            (item.id == eventId && item.timePeriod === 'FUTURE')
+            (item.id == eventId && item.timePeriod === 'FUTURE') ||
+            (item.id == eventId && item.timePeriod === 'CURRENT')
           : item.eventView !== 'PRIVATE' &&
             item.eventView !== 'LINKED' &&
             item.timePeriod !== 'FUTURE';
@@ -895,7 +899,8 @@ const Dashboard = () => {
           ? true
           : eventId !== null
           ? (item.eventView !== 'LINKED' && item.eventView !== 'PRIVATE') ||
-            (item.id == eventId && item.timePeriod === 'FUTURE')
+            (item.id == eventId && item.timePeriod === 'FUTURE') ||
+            (item.id == eventId && item.timePeriod === 'CURRENT')
           : item.eventView !== 'PRIVATE' &&
             item.eventView !== 'LINKED' &&
             item.timePeriod === 'FUTURE';

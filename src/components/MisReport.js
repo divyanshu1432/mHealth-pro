@@ -738,7 +738,7 @@ const MisReport = () => {
                         height: 30,
                       }}
                     >
-                      Graph View{' '}
+                      Charts{' '}
                     </button>
                   </Tab>
                 </TabList>

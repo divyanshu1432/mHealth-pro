@@ -97,30 +97,7 @@ const AuditReport = (props) => {
   const [Event, setEvent] = useState();
   const [data, setData] = useState([]);
   const geteventrlist = () => {
-    // const adminurl = `${urlPrefix}clients/getAllEvents?others=performance&userId=${localStorage.getItem(
-    //   'userId'
-    // )}`;
-
-    // return axios
-    //   .get(adminurl, {
-    //     headers: {
-    //       Authorization: `Bearer ${secretToken}`,
-    //       timeStamp: 'timestamp',
-    //       accept: '*/*',
-    //       'Access-Control-Allow-Origin': '*',
-    //       withCredentials: true,
-    //       'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
-    //       'Access-Control-Allow-Headers':
-    //         'accept, content-type, x-access-token, x-requested-with',
-    //     },
-    //   })
-    //   .then((res) => {
-    //     {
-    //       res.data.response.responseData
     setData(props.events);
-    //       : '';
-    //   }
-    // });
   };
   const [player, setPlayer] = useState([]);
 
@@ -724,7 +701,7 @@ const AuditReport = (props) => {
                             />
                           </TableCell>
                           <TableCell align="center" style={{fontSize: 12}}>
-                            <p style={{marginTop: '5px'}}> {item.date} </p>{' '}
+                            <p style={{width: '80px'}}> {item.date} </p>{' '}
                           </TableCell>
                           <TableCell align="center" style={{fontSize: 12}}>
                             {' '}
@@ -788,8 +765,11 @@ const AuditReport = (props) => {
                               src={item.whatsAppImage}
                               onClick={() => togglePopup(item.whatsAppImage)}
                               // onClick={ () => openImageViewer(index) }
-                              height="50%"
-                              width="50px"
+                              style={{
+                                width: 50,
+                                height: 50,
+                                objectFit: 'cover',
+                              }}
                               key={index}
                             />
                           </TableCell>

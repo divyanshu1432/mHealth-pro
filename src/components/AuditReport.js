@@ -4,6 +4,8 @@ import Popup from './Popup';
 import EditIcon from '@material-ui/icons/EditOutlined';
 import DoneIcon from '@material-ui/icons/DoneAllTwoTone';
 import Input from '@material-ui/core/Input';
+import Button from '@material-ui/core/Button';
+
 // import Event from './Event'
 // import 'bootstrap/dist/css/bootstrap.rtl.min.css';
 // import ImageViewer from 'react-simple-image-viewer';
@@ -62,14 +64,14 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 650,
   },
   selectTableCell: {
-    width: 30,
+    width: 120,
   },
   tableCell: {
     width: 130,
     height: 40,
   },
   input: {
-    width: 50,
+    width: 120,
     height: 40,
   },
 }));
@@ -79,7 +81,7 @@ const CustomTableCell = ({item, name, onChange}) => {
   const {isEditMode} = item;
   return (
     <TableCell align="left" className={classes.tableCell}>
-      {isEditMode ? (
+      {isEditMode && item.dataSource === 'WHATSAPP' ? (
         <Input
           value={item[name]}
           name={name}
@@ -97,7 +99,30 @@ const AuditReport = (props) => {
   const [Event, setEvent] = useState();
   const [data, setData] = useState([]);
   const geteventrlist = () => {
-    setData(props.events);
+    const adminurl = `${urlPrefix}clients/getAllEvents?others=performance&userId=${localStorage.getItem(
+      'userId'
+    )}`;
+
+    return axios
+      .get(adminurl, {
+        headers: {
+          Authorization: `Bearer ${secretToken}`,
+          timeStamp: 'timestamp',
+          accept: '*/*',
+          'Access-Control-Allow-Origin': '*',
+          withCredentials: true,
+          'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
+          'Access-Control-Allow-Headers':
+            'accept, content-type, x-access-token, x-requested-with',
+        },
+      })
+      .then((res) => {
+        {
+          res.data.response.responseData
+            ? setData(res.data.response.responseData.events)
+            : '';
+        }
+      });
   };
   const [player, setPlayer] = useState([]);
 
@@ -123,7 +148,7 @@ const AuditReport = (props) => {
         {
           res.data.response.responseData
             ? setPlayer(res.data.response.responseData)
-            : Message.error(res.data.response.responseMessage);
+            : message.error(res.data.response.responseMessage);
         }
       });
   };
@@ -214,9 +239,10 @@ const AuditReport = (props) => {
     const name = e.target.name;
     console.log(name);
     const {id} = row;
-    // console.log(id)
+
     setEditId(id);
     const newRows = items.map((row) => {
+      // alert('Success!')
       if (row.id === id) {
         return {...row, [name]: value};
       }
@@ -225,13 +251,17 @@ const AuditReport = (props) => {
     setItems(newRows);
   };
 
+  const Success = () => {
+    Message.success('Updated Successfully!');
+  };
+
   console.log(items);
   const [currentImage, setCurrentImage] = useState('');
   const [isViewerOpen, setIsViewerOpen] = useState([false]);
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('');
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(50);
   const [isOpen, setIsOpen] = useState(false);
   const togglePopup = (whatsAppImage) => {
     setIsOpen(!isOpen);
@@ -242,7 +272,7 @@ const AuditReport = (props) => {
   //   const [isActive, setIsActive] = useState(true);
   //   const [team, setteam] = useState();
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    setRowsPerPage(parseInt(event.target.value, 50));
     setPage(0);
   };
   // console.log(team, "xyz");
@@ -286,22 +316,22 @@ const AuditReport = (props) => {
   function TablePaginationActions(props) {
     const classes = useStyles();
     const theme = useTheme();
-    const {count, page, rowsPerPage, onChangePage} = props;
+    const {count, page, rowsPerPage, onPageChange} = props;
 
     const handleFirstPageButtonClick = (event) => {
-      onChangePage(event, 0);
+      ononPageChange(event, 0);
     };
 
     const handleBackButtonClick = (event) => {
-      onChangePage(event, page - 1);
+      ononPageChange(event, page - 1);
     };
 
     const handleNextButtonClick = (event) => {
-      onChangePage(event, page + 1);
+      ononPageChange(event, page + 1);
     };
 
     const handleLastPageButtonClick = (event) => {
-      onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+      ononPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
     };
 
     return (
@@ -564,11 +594,7 @@ const AuditReport = (props) => {
                     {data &&
                       data.map(function (ev, index) {
                         return (
-                          <MenuItem
-                            required
-                            style={{fontSize: 12}}
-                            value={ev.id}
-                          >
+                          <MenuItem required value={ev.id}>
                             {ev.challengeName}
                           </MenuItem>
                         );
@@ -598,11 +624,7 @@ const AuditReport = (props) => {
                     {player &&
                       player.map(function (ev, index) {
                         return (
-                          <MenuItem
-                            required
-                            style={{fontSize: 12}}
-                            value={ev.mstUserId}
-                          >
+                          <MenuItem required value={ev.mstUserId}>
                             {ev.name}
                           </MenuItem>
                         );
@@ -644,7 +666,7 @@ const AuditReport = (props) => {
           </Tooltip>
           <div className="d-flex a-i-center">
             <TablePagination
-              rowsPerPageOptions={[10, 50, 75, 100]}
+              rowsPerPageOptions={[50, 75, 100]}
               component="div"
               count={items && items.length}
               rowsPerPage={rowsPerPage}
@@ -701,7 +723,10 @@ const AuditReport = (props) => {
                             />
                           </TableCell>
                           <TableCell align="center" style={{fontSize: 12}}>
-                            <p style={{width: '80px'}}> {item.date} </p>{' '}
+                            <p style={{marginTop: '5px', width: 80}}>
+                              {' '}
+                              {item.date}{' '}
+                            </p>{' '}
                           </TableCell>
                           <TableCell align="center" style={{fontSize: 12}}>
                             {' '}
@@ -762,33 +787,40 @@ const AuditReport = (props) => {
                           </TableCell>
                           <TableCell align="center" style={{fontSize: 12}}>
                             <img
-                              src={item.whatsAppImage}
+                              src={
+                                item.dataSource === 'WHATSAPP'
+                                  ? item.whatsAppImage
+                                  : 'https://walkathon21.s3.ap-south-1.amazonaws.com/logo/pixel.png'
+                              }
                               onClick={() => togglePopup(item.whatsAppImage)}
                               // onClick={ () => openImageViewer(index) }
-                              style={{
-                                width: 50,
-                                height: 50,
-                                objectFit: 'cover',
-                              }}
+                              height="50px"
+                              width="25px"
                               key={index}
                             />
                           </TableCell>
 
-                          {isOpen && (
-                            <Popup
-                              content={
-                                <>
-                                  <img
-                                    src={currentImage}
-                                    height="450px"
-                                    width="450px"
-                                  />
-                                </>
-                              }
-                              handleClose={togglePopup}
-                            />
-                          )}
-                          <TableCell align="center">
+                          {item.dataSource === 'WHATSAPP'
+                            ? isOpen && (
+                                <Popup
+                                  content={
+                                    <>
+                                      <img
+                                        src={
+                                          item.dataSource === 'WHATSAPP'
+                                            ? currentImage
+                                            : 'https://walkathon21.s3.ap-south-1.amazonaws.com/logo/pixel.png'
+                                        }
+                                        height="540px"
+                                        width="340px"
+                                      />
+                                    </>
+                                  }
+                                  handleClose={togglePopup}
+                                />
+                              )
+                            : !isOpen}
+                          <TableCell align="center" width="200px">
                             <CustomTableCell
                               {...{item, name: 'leaderBoardValue', onChange}}
                             />
@@ -800,13 +832,14 @@ const AuditReport = (props) => {
                             align="center"
                             className={classes.selectTableCell}
                           >
-                            {item.isEditMode ? (
+                            {item.isEditMode &&
+                            item.dataSource === 'WHATSAPP' ? (
                               <>
                                 <IconButton
                                   aria-label="done"
                                   onClick={() => onToggleEditMode(item.id)}
                                 >
-                                  <DoneIcon />
+                                  <DoneIcon onClick={Success} />
                                 </IconButton>
                               </>
                             ) : (

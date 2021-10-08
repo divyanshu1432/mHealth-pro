@@ -134,7 +134,7 @@ const GraphReport = (props) => {
             marginLeft: '1000px',
           }}
         >
-          Total Member: {circle + 1}
+          Total Member: {circle}
         </p>
         <hr />{' '}
         <div style={{}}>
@@ -153,7 +153,11 @@ const GraphReport = (props) => {
                 return (
                   <>
                     <div>
-                      <div style={{}}>
+                      <div
+                        style={{
+                          height: '20px',
+                        }}
+                      >
                         <p
                           style={{
                             marginLeft: '30px',
@@ -161,7 +165,6 @@ const GraphReport = (props) => {
                           }}
                         >
                           <strong>
-                            {' '}
                             {item.subEventName} [{item.eventStartDate}]
                           </strong>
                         </p>
@@ -174,6 +177,7 @@ const GraphReport = (props) => {
                           options={{
                             legend: 'none',
                             is3D: true,
+                            // colors:['','','#ffad33']
                           }}
                           chartType="PieChart"
                           loader={<div>Loading Chart</div>}
@@ -181,13 +185,13 @@ const GraphReport = (props) => {
                             ['Task', 'Hours per Day'],
 
                             [
-                              'Not Subscribers',
+                              'Not Subscribed',
                               circle -
                                 item.noOfSubscribers -
                                 item.noOfAttendies,
                             ],
-                            ['No. of subscribers', item.noOfSubscribers],
-                            ['No of Attendence', item.noOfAttendies],
+                            ['Total Subscribers', item.noOfSubscribers],
+                            ['Total Joined', item.noOfAttendies],
                           ]}
                           // options={{
                           //   // is3D: true
@@ -209,7 +213,8 @@ const GraphReport = (props) => {
                       <div style={{marginTop: '-10px'}}>
                         <span class="dot"></span>{' '}
                         <span style={{fontSize: '12px'}}>
-                          Not Subscribed: {circle - item.noOfSubscribers}
+                          Not Subscribed:{' '}
+                          {circle - item.noOfSubscribers - item.noOfAttendies}
                         </span>
                       </div>
                     </div>

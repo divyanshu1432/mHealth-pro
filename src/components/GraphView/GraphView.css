@@ -1,10 +1,10 @@
 .dot {
   height: 10px;
   width: 10px;
-  background-color: rgb(77, 32, 182);
+  background-color: #3333ff;
   border-radius: 50%;
   display: inline-block;
-  margin-left: 30px;
+  margin-left: -0px;
 }
 
 .dot1 {
@@ -13,13 +13,13 @@
   background-color: red;
   border-radius: 50%;
   display: inline-block;
-  margin-left: 30px;
+  justify-content: left;
 }
 .dot2 {
   height: 10px;
   width: 10px;
-  background-color: #cc8800;
+  background-color: #ffad33;
   border-radius: 50%;
   display: inline-block;
-  margin-left: 30px;
+  justify-content: left;
 }

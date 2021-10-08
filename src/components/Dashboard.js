@@ -1106,26 +1106,6 @@ const Dashboard = () => {
                   dashboardState.listOfChallenges.length > 0 && (
                     <button
                       className={classnames({
-                        selected: dashboardState.selectedAction === 'challenge',
-                      })}
-                      onClick={() => {
-                        setDashboardState((prevState) => {
-                          return {
-                            ...prevState,
-                            selectedAction: 'challenge',
-                            listOfChallenges: getCurrentAllEvents(),
-                          };
-                        });
-                      }}
-                    >
-                      Challenge{' '}
-                    </button>
-                  )}
-
-                {dashboardState.challengeSwitch !== 'upcoming' &&
-                  dashboardState.listOfChallenges.length > 0 && (
-                    <button
-                      className={classnames({
                         selected:
                           dashboardState.selectedAction === 'achievement',
                       })}
@@ -1140,6 +1120,26 @@ const Dashboard = () => {
                       }}
                     >
                       Achievement{' '}
+                    </button>
+                  )}
+
+                {dashboardState.challengeSwitch !== 'upcoming' &&
+                  dashboardState.listOfChallenges.length > 0 && (
+                    <button
+                      className={classnames({
+                        selected: dashboardState.selectedAction === 'challenge',
+                      })}
+                      onClick={() => {
+                        setDashboardState((prevState) => {
+                          return {
+                            ...prevState,
+                            selectedAction: 'challenge',
+                            listOfChallenges: getCurrentAllEvents(),
+                          };
+                        });
+                      }}
+                    >
+                      Challenge{' '}
                     </button>
                   )}
 

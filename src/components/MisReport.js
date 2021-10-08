@@ -805,7 +805,7 @@ const MisReport = () => {
                     <div
                       className="select_date"
                       style={{
-                        width: '20%',
+                        maxWidth: '250px',
                         justifyContent: 'center',
                         alignItems: 'center',
                         top: 20,
@@ -815,7 +815,7 @@ const MisReport = () => {
                         <legend>Select Program</legend>
                         <form className={classes1.container} noValidate>
                           <Select
-                            style={{width: '100%'}}
+                            style={{width: '250px'}}
                             labelId="demo-controlled-open-select-label"
                             id="demo-controlled-open-select"
                             // open={open}

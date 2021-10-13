@@ -20,9 +20,6 @@ import {
 } from '../../services/loginapi';
 import {getUserDetailsHandler} from '../../services/userprofileApi';
 
-
-
-
 const Login = () => {
   window.message = Message;
   const history = useHistory();
@@ -44,8 +41,8 @@ const Login = () => {
     isPasswordForgotten: false,
     gender: '',
     city: '',
-    companyName:'',
-    employeeId:''
+    companyName: '',
+    employeeId: '',
   });
   const [loaderInfo, setLoaderInfo] = useState({
     mobileVerification: false,
@@ -81,15 +78,12 @@ const Login = () => {
       });
     }
 
-
     if (type === 'employeeId') {
       setUserData({
         ...userData,
         employeeId: value,
       });
     }
-
-
 
     if (type === 'otp') {
       setUserData({
@@ -251,7 +245,6 @@ const Login = () => {
   };
 
   const handleInfoSubmit = () => {
-   
     setLoaderInfo({...loaderInfo, userVerification: true});
     registerUserHandler(
       {
@@ -263,8 +256,8 @@ const Login = () => {
         roleType: 1,
         gender: userData.gender,
         city: userData.city,
-        companyName:userData.companyName,
-        employeeId:userData.employeeId
+        companyName: userData.companyName,
+        employeeId: userData.employeeId,
       },
       userData.userToken
     )
@@ -376,9 +369,8 @@ const Login = () => {
               );
             }
           });
-       
+
           history.push('./dashboard');
-     
         } else {
           message.error(res.data.response.responseMessage);
         }
@@ -390,38 +382,31 @@ const Login = () => {
       });
   };
 
-  const  userInfo = () => {
- 
-    if(window.location.href == 'https://global.mhealth.ai/#/login'){
-      return(
-      <CompnyForm
-      {...{
-        userData,
-        loaderInfo,
-        handleInput,
-        handleInfoSubmit,
-      }}
-    />
-      )
+  const userInfo = () => {
+    if (window.location.href == 'https://global.mhealth.ai/#/login') {
+      return (
+        <CompnyForm
+          {...{
+            userData,
+            loaderInfo,
+            handleInput,
+            handleInfoSubmit,
+          }}
+        />
+      );
+    } else {
+      return (
+        <UserInfoForm
+          {...{
+            userData,
+            loaderInfo,
+            handleInput,
+            handleInfoSubmit,
+          }}
+        />
+      );
     }
-
-    else{
-      return(
-      <UserInfoForm
-      {...{
-        userData,
-        loaderInfo,
-        handleInput,
-        handleInfoSubmit,
-      }}
-    />
-      )
-    }
-    
-    }
-
-
-
+  };
 
   const handleSettingNewPassword = () => {
     forgetPasswordHandler(
@@ -498,10 +483,11 @@ const Login = () => {
               {...{userData, loaderInfo, handleInput, handleOtpInputSubmit}}
             />
           )}
-        
-          {ismobileNoVerified && isOtpVerified && !isUserRegistered && (
-           userInfo()
-          )}
+
+          {ismobileNoVerified &&
+            isOtpVerified &&
+            !isUserRegistered &&
+            userInfo()}
           {ismobileNoVerified && isOtpVerified && isUserRegistered && (
             <SuccessForm />
           )}

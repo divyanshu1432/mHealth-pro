@@ -1,63 +1,63 @@
-import React, { useState, useEffect } from "react";
-import clsx from "clsx";
-import { lighten, makeStyles, useTheme } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TablePagination from "@material-ui/core/TablePagination";
-import TableRow from "@material-ui/core/TableRow";
-import TableSortLabel from "@material-ui/core/TableSortLabel";
-import Toolbar from "@material-ui/core/Toolbar";
-import Paper from "@material-ui/core/Paper";
-import Checkbox from "@material-ui/core/Checkbox";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import FilterListIcon from "@material-ui/icons/FilterList";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Avatar from "@material-ui/core/Avatar";
-import Popover from "@material-ui/core/Popover";
-import LeaderBoardFilters from "./LeaderBoardFilters";
-import FirstPageIcon from "@material-ui/icons/FirstPage";
-import KeyboardArrowLeft from "@material-ui/icons/KeyboardArrowLeft";
-import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
-import LastPageIcon from "@material-ui/icons/LastPage";
-import { pinUsersAction } from "../services/challengeApi";
-import { APP } from "../utils/appConfig";
-import CSVExport from "./CSVExport";
-import TableDataSourceCarousel from "./TableDataSourceCarousel";
-import ImageCarousel from "./ImageCarousel";
-import { checkForFalsy } from "../utils/commonFunctions";
-import NoData from "./NoData";
-import ActiveButton from "./Utility/ActiveButton";
+import React, {useState, useEffect} from 'react';
+import clsx from 'clsx';
+import {lighten, makeStyles, useTheme} from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TablePagination from '@material-ui/core/TablePagination';
+import TableRow from '@material-ui/core/TableRow';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
+import Toolbar from '@material-ui/core/Toolbar';
+import Paper from '@material-ui/core/Paper';
+import Checkbox from '@material-ui/core/Checkbox';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
+import FilterListIcon from '@material-ui/icons/FilterList';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Avatar from '@material-ui/core/Avatar';
+import Popover from '@material-ui/core/Popover';
+import LeaderBoardFilters from './LeaderBoardFilters';
+import FirstPageIcon from '@material-ui/icons/FirstPage';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import LastPageIcon from '@material-ui/icons/LastPage';
+import {pinUsersAction} from '../services/challengeApi';
+import {APP} from '../utils/appConfig';
+import CSVExport from './CSVExport';
+import TableDataSourceCarousel from './TableDataSourceCarousel';
+import ImageCarousel from './ImageCarousel';
+import {checkForFalsy} from '../utils/commonFunctions';
+import NoData from './NoData';
+import ActiveButton from './Utility/ActiveButton';
 
 function FacebookCircularProgress(props) {
   const useStylesFacebook = makeStyles((theme) => ({
     root: {
-      position: "absolute",
-      left: "50%",
-      top: "50%"
+      position: 'absolute',
+      left: '50%',
+      top: '50%',
     },
     bottom: {
-      color: theme.palette.grey[theme.palette.type === "light" ? 200 : 700]
+      color: theme.palette.grey[theme.palette.type === 'light' ? 200 : 700],
     },
     top: {
-      color: "#1a90ff",
-      animationDuration: "550ms",
-      position: "absolute",
-      left: 0
+      color: '#1a90ff',
+      animationDuration: '550ms',
+      position: 'absolute',
+      left: 0,
     },
     circle: {
-      strokeLinecap: "round"
-    }
+      strokeLinecap: 'round',
+    },
   }));
   const classes = useStylesFacebook();
 
   return (
     <div className={classes.root}>
       <CircularProgress
-        variant='determinate'
+        variant="determinate"
         className={classes.bottom}
         size={20}
         thickness={4}
@@ -65,11 +65,11 @@ function FacebookCircularProgress(props) {
         value={100}
       />
       <CircularProgress
-        variant='indeterminate'
+        variant="indeterminate"
         disableShrink
         className={classes.top}
         classes={{
-          circle: classes.circle
+          circle: classes.circle,
         }}
         size={20}
         thickness={4}
@@ -82,26 +82,26 @@ function FacebookCircularProgress(props) {
 function descendingComparator(a, b, orderBy) {
   let firstValue =
     a[orderBy] == null
-      ? "zzzzzzzzzzzzzzzz"
-      : typeof a[orderBy] == "string"
+      ? 'zzzzzzzzzzzzzzzz'
+      : typeof a[orderBy] == 'string'
       ? a[orderBy]?.toLowerCase()
       : a[orderBy];
   let secondValue =
     b[orderBy] == null
-      ? "zzzzzzzzzzzzzzzz"
-      : typeof b[orderBy] == "string"
+      ? 'zzzzzzzzzzzzzzzz'
+      : typeof b[orderBy] == 'string'
       ? b[orderBy]?.toLowerCase()
       : b[orderBy];
   let modifiedFirst =
-    orderBy == "userName"
-      ? a["aliasName"]
-        ? a["aliasName"]?.toLowerCase()
+    orderBy == 'userName'
+      ? a['aliasName']
+        ? a['aliasName']?.toLowerCase()
         : firstValue
       : firstValue;
   let modifiedSecond =
-    orderBy == "userName"
-      ? b["aliasName"]
-        ? b["aliasName"]?.toLowerCase()
+    orderBy == 'userName'
+      ? b['aliasName']
+        ? b['aliasName']?.toLowerCase()
         : secondValue
       : secondValue;
   if (modifiedSecond < modifiedFirst) {
@@ -114,7 +114,7 @@ function descendingComparator(a, b, orderBy) {
 }
 
 function getComparator(order, orderBy) {
-  return order === "desc"
+  return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
@@ -131,46 +131,52 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    label: "Rank",
-    id: "rank",
+    label: 'Rank',
+    id: 'rank',
     numeric: true,
-    disablePadding: true
+    disablePadding: true,
   },
   {
-    label: "Name",
-    id: "userName",
+    label: 'Name',
+    id: 'userName',
     numeric: false,
-    disablePadding: true
+    disablePadding: true,
   },
   {
-    label: "Gender",
-    id: "gender",
+    label: 'Gender',
+    id: 'gender',
     numeric: false,
-    disablePadding: true
+    disablePadding: true,
   },
   {
-    label: "City",
-    id: "city",
+    label: 'City',
+    id: 'city',
     numeric: false,
-    disablePadding: true
+    disablePadding: true,
   },
   {
-    label: "Source",
-    id: "dataSource",
+    label: 'Source',
+    id: 'dataSource',
     numeric: false,
-    disablePadding: true
+    disablePadding: true,
   },
   {
-    label: "Date",
-    id: "valueTillDate",
+    label: 'Date',
+    id: 'valueTillDate',
     numeric: false,
-    disablePadding: true
+    disablePadding: true,
   },
   {
-    label: "Km",
-    id: "lastDistanceCovered",
+    label: 'Achievement',
+    id: 'valueTillDate',
+    numeric: false,
+    disablePadding: true,
+  },
+  {
+    label: 'Km',
+    id: 'lastDistanceCovered',
     numeric: true,
-    disablePadding: true
+    disablePadding: true,
   },
 
   // {
@@ -180,29 +186,29 @@ const headCells = [
   //   disablePadding: true
   // },
   {
-    label: "Total Km",
-    id: "value",
+    label: 'Total Km',
+    id: 'value',
     numeric: true,
-    disablePadding: true
+    disablePadding: true,
   },
   {
-    label: "Average Km",
-    id: "averageDistanceCovered",
+    label: 'Average Km',
+    id: 'averageDistanceCovered',
     numeric: true,
-    disablePadding: true
+    disablePadding: true,
   },
   {
-    label: "Lead",
-    id: "leadBy",
+    label: 'Lead',
+    id: 'leadBy',
     numeric: true,
-    disablePadding: true
+    disablePadding: true,
   },
   {
-    label: "Active Days",
-    id: "totalParticipationDays",
+    label: 'Active Days',
+    id: 'totalParticipationDays',
     numeric: true,
-    disablePadding: true
-  }
+    disablePadding: true,
+  },
 ];
 
 function EnhancedTableHead(props) {
@@ -214,7 +220,7 @@ function EnhancedTableHead(props) {
     numSelected,
     rowCount,
     onRequestSort,
-    pinActive
+    pinActive,
   } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -224,9 +230,9 @@ function EnhancedTableHead(props) {
     <TableHead>
       <TableRow>
         {pinActive && (
-          <TableCell padding='checkbox'>
+          <TableCell padding="checkbox">
             <Checkbox
-              inputProps={{ "aria-label": "select all desserts" }}
+              inputProps={{'aria-label': 'select all desserts'}}
               disabled={true}
             />
           </TableCell>
@@ -234,19 +240,19 @@ function EnhancedTableHead(props) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align='center'
-            padding={headCell.disablePadding ? "none" : "default"}
+            align="center"
+            padding={headCell.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
               active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : "asc"}
+              direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
             >
               {headCell.label}
               {orderBy === headCell.id ? (
                 <span className={classes.visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
+                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                 </span>
               ) : null}
             </TableSortLabel>
@@ -260,34 +266,34 @@ function EnhancedTableHead(props) {
 const useToolbarStyles = makeStyles((theme) => ({
   root: {
     paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1)
+    paddingRight: theme.spacing(1),
   },
   highlight:
-    theme.palette.type === "light"
+    theme.palette.type === 'light'
       ? {
-          color: "#0277bd",
-          border: "1px solid #f5f5f5"
+          color: '#0277bd',
+          border: '1px solid #f5f5f5',
         }
       : {
-          color: "#0277bd",
-          border: "1px solid #f5f5f5"
+          color: '#0277bd',
+          border: '1px solid #f5f5f5',
         },
   title: {
-    flex: "1 1 100%"
-  }
+    flex: '1 1 100%',
+  },
 }));
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
     flexShrink: 0,
-    marginLeft: theme.spacing(2.5)
-  }
+    marginLeft: theme.spacing(2.5),
+  },
 }));
 
 function TablePaginationActions(props) {
   const classes = useStyles1();
   const theme = useTheme();
-  const { count, page, rowsPerPage, onPageChange } = props;
+  const {count, page, rowsPerPage, onPageChange} = props;
 
   const handleFirstPageButtonClick = (event) => {
     onPageChange(event, 0);
@@ -307,22 +313,22 @@ function TablePaginationActions(props) {
   };
 
   return (
-    <div className={classes.root} style={{ display: "flex" }}>
+    <div className={classes.root} style={{display: 'flex'}}>
       <IconButton
         onClick={handleFirstPageButtonClick}
         disabled={page === 0}
-        aria-label='first page'
-        style={{ width: 30, padding: 0 }}
+        aria-label="first page"
+        style={{width: 30, padding: 0}}
       >
-        {theme.direction === "rtl" ? <LastPageIcon /> : <FirstPageIcon />}
+        {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
       </IconButton>
       <IconButton
         onClick={handleBackButtonClick}
         disabled={page === 0}
-        aria-label='previous page'
-        style={{ width: 30, padding: 0 }}
+        aria-label="previous page"
+        style={{width: 30, padding: 0}}
       >
-        {theme.direction === "rtl" ? (
+        {theme.direction === 'rtl' ? (
           <KeyboardArrowRight />
         ) : (
           <KeyboardArrowLeft />
@@ -331,10 +337,10 @@ function TablePaginationActions(props) {
       <IconButton
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label='next page'
-        style={{ width: 30, padding: 0 }}
+        aria-label="next page"
+        style={{width: 30, padding: 0}}
       >
-        {theme.direction === "rtl" ? (
+        {theme.direction === 'rtl' ? (
           <KeyboardArrowLeft />
         ) : (
           <KeyboardArrowRight />
@@ -343,10 +349,10 @@ function TablePaginationActions(props) {
       <IconButton
         onClick={handleLastPageButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label='last page'
-        style={{ width: 30, padding: 0 }}
+        aria-label="last page"
+        style={{width: 30, padding: 0}}
       >
-        {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
+        {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
       </IconButton>
     </div>
   );
@@ -363,7 +369,7 @@ const EnhancedTableToolbar = (props) => {
     setTableRowData,
     setFilters,
     filters,
-    currentEvent
+    currentEvent,
   } = props;
 
   const [filterPopoverAnchorEl, setFilterPopoverAnchorEl] =
@@ -378,35 +384,35 @@ const EnhancedTableToolbar = (props) => {
   };
 
   const filterPopoverOpen = Boolean(filterPopoverAnchorEl);
-  const filterPopoverId = filterPopoverOpen ? "simple-popover" : undefined;
+  const filterPopoverId = filterPopoverOpen ? 'simple-popover' : undefined;
 
   const handlePinSave = () => {
     setPinActive(false);
-    let pinnedUsers = leaderBoardData["data"]["rankWiseBoard"]
+    let pinnedUsers = leaderBoardData['data']['rankWiseBoard']
       .filter((item) => selected.includes(item.rank))
       .map((item) => item.userId);
     let payload = {
       challangerZoneId: leaderBoardData.data.challengerZoneId,
-      userIdsToPin: pinnedUsers
+      userIdsToPin: pinnedUsers,
     };
     pinUsersAction(payload);
 
     if (
-      leaderBoardData["data"]["rankWiseBoard"] &&
-      leaderBoardData["data"]["sessionUserRank"]
+      leaderBoardData['data']['rankWiseBoard'] &&
+      leaderBoardData['data']['sessionUserRank']
     ) {
       setTableRowData([
-        leaderBoardData["data"]["sessionUserRank"],
-        ...leaderBoardData["data"]["rankWiseBoard"].filter(
+        leaderBoardData['data']['sessionUserRank'],
+        ...leaderBoardData['data']['rankWiseBoard'].filter(
           (item) =>
             pinnedUsers.includes(item.userId) &&
-            item.userId !== leaderBoardData["data"]["sessionUserRank"]["userId"]
+            item.userId !== leaderBoardData['data']['sessionUserRank']['userId']
         ),
-        ...leaderBoardData["data"]["rankWiseBoard"].filter(
+        ...leaderBoardData['data']['rankWiseBoard'].filter(
           (item) =>
             !pinnedUsers.includes(item.userId) &&
-            item.userId !== leaderBoardData["data"]["sessionUserRank"]["userId"]
-        )
+            item.userId !== leaderBoardData['data']['sessionUserRank']['userId']
+        ),
       ]);
     }
   };
@@ -415,72 +421,72 @@ const EnhancedTableToolbar = (props) => {
     <>
       <Toolbar
         className={clsx(classes.root, {
-          [classes.highlight]: pinActive
+          [classes.highlight]: pinActive,
         })}
       >
-        {pinActive && currentEvent["id"] ? (
-          <div className='leaderboard-table-title challenges-heading'>
+        {pinActive && currentEvent['id'] ? (
+          <div className="leaderboard-table-title challenges-heading">
             {numSelected}/{`${currentEvent.pinnedUserCount} friends pinned`}
           </div>
         ) : (
-          <div className='leaderboard-table-title challenges-heading'>
-            {currentEvent && currentEvent["challengeName"]
-              ? currentEvent["challengeName"]
-              : "Table Title"}
-            <span style={{ marginLeft: 5, color: "#757575" }}>
+          <div className="leaderboard-table-title challenges-heading">
+            {currentEvent && currentEvent['challengeName']
+              ? currentEvent['challengeName']
+              : 'Table Title'}
+            <span style={{marginLeft: 5, color: '#757575'}}>
               {currentEvent
-                ? currentEvent["moderatorName"]
-                  ? `( Moderator : ${currentEvent["moderatorName"]} ${
-                      currentEvent["moderatorMobileNumber"]
-                        ? " , " + currentEvent["moderatorMobileNumber"] + " )"
-                        : " )"
+                ? currentEvent['moderatorName']
+                  ? `( Moderator : ${currentEvent['moderatorName']} ${
+                      currentEvent['moderatorMobileNumber']
+                        ? ' , ' + currentEvent['moderatorMobileNumber'] + ' )'
+                        : ' )'
                     }`
-                  : ""
-                : ""}
+                  : ''
+                : ''}
             </span>
           </div>
         )}
 
-        {pinActive && currentEvent["id"] ? (
+        {pinActive && currentEvent['id'] ? (
           <button
-            variant='contained'
+            variant="contained"
             onClick={() => handlePinSave()}
-            className='pin-users-save-button'
+            className="pin-users-save-button"
             style={{
-              background: "#DCFCE7",
-              color: "#166534",
+              background: '#DCFCE7',
+              color: '#166534',
               borderRadius: 2,
-              height: 20
+              height: 20,
             }}
           >
             SAVE
           </button>
         ) : (
-          <div className='leaderboard-table-button-wrapper'>
+          <div className="leaderboard-table-button-wrapper">
             {leaderBoardData?.data?.rankWiseBoard?.length > 0 &&
-              currentEvent["id"] && (
-                <Tooltip title='Export data'>
+              currentEvent['id'] && (
+                <Tooltip title="Export data">
                   <CSVExport
                     data={
                       leaderBoardData?.data?.rankWiseBoard?.length > 0
                         ? leaderBoardData?.data?.rankWiseBoard
                         : []
                     }
-                    filename={`${leaderBoardData["data"]["challengerZoneName"]}.csv`}
-                    source='dashboard'
+                    filename={`${leaderBoardData['data']['challengerZoneName']}.csv`}
+                    source="dashboard"
                   />
                 </Tooltip>
               )}
-            {currentEvent["id"] && (
-              <Tooltip title='Pin users'>
+            {currentEvent['id'] && (
+              <Tooltip title="Pin users">
                 <button
                   style={{
                     height: 20,
-                    background: "#E0E7FF",
-                    color: "#4338CA",
+                    background: '#E0E7FF',
+                    color: '#4338CA',
                     borderRadius: 2,
                     width: 100,
-                    marginLeft: 10
+                    marginLeft: 10,
                   }}
                   onClick={() => setPinActive(!pinActive)}
                 >
@@ -508,12 +514,12 @@ const EnhancedTableToolbar = (props) => {
           anchorEl={filterPopoverAnchorEl}
           onClose={handlefilterPopoverClose}
           anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left"
+            vertical: 'bottom',
+            horizontal: 'left',
           }}
           transformOrigin={{
-            vertical: "top",
-            horizontal: "right"
+            vertical: 'top',
+            horizontal: 'right',
           }}
         >
           <div>
@@ -534,100 +540,100 @@ const EnhancedTableToolbar = (props) => {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: "100%"
+    width: '100%',
   },
   paper: {
-    width: "100%",
-    marginBottom: theme.spacing(2)
+    width: '100%',
+    marginBottom: theme.spacing(2),
   },
   table: {
-    minWidth: 750
+    minWidth: 750,
   },
   visuallyHidden: {
     border: 0,
-    clip: "rect(0 0 0 0)",
+    clip: 'rect(0 0 0 0)',
     height: 1,
     margin: -1,
-    overflow: "hidden",
+    overflow: 'hidden',
     padding: 0,
-    position: "absolute",
+    position: 'absolute',
     top: 20,
-    width: 1
-  }
+    width: 1,
+  },
 }));
 
 export default function EnhancedTable({
   leaderBoardData,
   currentEvent,
-  challengeSwitch
+  challengeSwitch,
 }) {
   const classes = useStyles();
 
   const [tableRowData, setTableRowData] = useState([]);
-  const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("");
+  const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState('');
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [pinActive, setPinActive] = useState(false);
   const [filters, setFilters] = useState({
-    gender: "",
+    gender: '',
     age: [0, 100],
-    city: "",
-    pinCode: "",
-    state: "",
-    activeDays: [0, 365]
+    city: '',
+    pinCode: '',
+    state: '',
+    activeDays: [0, 365],
   });
   const [isActive, setActive] = useState(true);
 
   const settingTableData = () => {
-    if (leaderBoardData && leaderBoardData["data"] && currentEvent["id"]) {
-      let pinnedUsers = leaderBoardData["data"]["pinUserRank"]
-        ? leaderBoardData["data"]["pinUserRank"].map((item) => item.userId)
+    if (leaderBoardData && leaderBoardData['data'] && currentEvent['id']) {
+      let pinnedUsers = leaderBoardData['data']['pinUserRank']
+        ? leaderBoardData['data']['pinUserRank'].map((item) => item.userId)
         : [];
 
-      if (leaderBoardData["data"]["rankWiseBoard"]) {
-        if (leaderBoardData["data"]["sessionUserRank"]) {
+      if (leaderBoardData['data']['rankWiseBoard']) {
+        if (leaderBoardData['data']['sessionUserRank']) {
           let tableData = [
-            leaderBoardData["data"]["sessionUserRank"],
-            ...leaderBoardData["data"]["rankWiseBoard"].filter(
+            leaderBoardData['data']['sessionUserRank'],
+            ...leaderBoardData['data']['rankWiseBoard'].filter(
               (item) =>
                 pinnedUsers.includes(item.userId) &&
                 item.userId !==
-                  leaderBoardData["data"]["sessionUserRank"]["userId"]
+                  leaderBoardData['data']['sessionUserRank']['userId']
             ),
-            ...leaderBoardData["data"]["rankWiseBoard"].filter((item) =>
+            ...leaderBoardData['data']['rankWiseBoard'].filter((item) =>
               isActive
                 ? !pinnedUsers.includes(item.userId) &&
                   item.userId !==
-                    leaderBoardData["data"]["sessionUserRank"]["userId"] &&
+                    leaderBoardData['data']['sessionUserRank']['userId'] &&
                   item.totalParticipationDays > 0
                 : !pinnedUsers.includes(item.userId) &&
                   item.userId !==
-                    leaderBoardData["data"]["sessionUserRank"]["userId"]
-            )
+                    leaderBoardData['data']['sessionUserRank']['userId']
+            ),
           ];
           setTableRowData(tableData);
         } else {
           let tableData = [
-            ...leaderBoardData["data"]["rankWiseBoard"].filter((item) =>
+            ...leaderBoardData['data']['rankWiseBoard'].filter((item) =>
               pinnedUsers.includes(item.userId)
             ),
-            ...leaderBoardData["data"]["rankWiseBoard"].filter((item) =>
+            ...leaderBoardData['data']['rankWiseBoard'].filter((item) =>
               isActive
                 ? !pinnedUsers.includes(item.userId) &&
                   item.totalParticipationDays > 0
                 : !pinnedUsers.includes(item.userId)
-            )
+            ),
           ];
 
           setTableRowData(tableData);
         }
       }
 
-      if (leaderBoardData["data"]["pinUserRank"]) {
+      if (leaderBoardData['data']['pinUserRank']) {
         setSelected(
-          leaderBoardData["data"]["pinUserRank"].map((item) => item.rank)
+          leaderBoardData['data']['pinUserRank'].map((item) => item.rank)
         );
       }
     }
@@ -644,13 +650,13 @@ export default function EnhancedTable({
 
   useEffect(() => {
     if (challengeSwitch) {
-      setActive(challengeSwitch == "upcoming" ? false : true);
+      setActive(challengeSwitch == 'upcoming' ? false : true);
     }
   }, [challengeSwitch]);
 
   const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
@@ -675,10 +681,10 @@ export default function EnhancedTable({
         );
       }
       if (
-        leaderBoardData["data"] &&
-        leaderBoardData["data"]["sessionUserRank"]
+        leaderBoardData['data'] &&
+        leaderBoardData['data']['sessionUserRank']
       ) {
-        if (leaderBoardData["data"]["sessionUserRank"]["rank"] !== rank) {
+        if (leaderBoardData['data']['sessionUserRank']['rank'] !== rank) {
           setSelected(newSelected);
         }
       } else {
@@ -711,9 +717,9 @@ export default function EnhancedTable({
   };
 
   const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
+  const id = open ? 'simple-popover' : undefined;
   const [showCarousel, setShowCarousel] = useState(false);
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState('');
 
   const getFilterData = () => {
     const filterData = leaderBoardData.data.rankWiseBoard.filter((v) =>
@@ -726,14 +732,14 @@ export default function EnhancedTable({
 
   const getStatusImg = (url) => {
     return (
-      <div style={{ width: 30 }}>
-        <img src={url} width={"100%"} />
+      <div style={{width: 30}}>
+        <img src={url} width={'100%'} />
       </div>
     );
   };
 
   return (
-    <div className={classes.root} style={{ display: "flex" }}>
+    <div className={classes.root} style={{display: 'flex'}}>
       <Paper className={classes.paper}>
         <TableContainer>
           <EnhancedTableToolbar
@@ -747,12 +753,12 @@ export default function EnhancedTable({
             filters={filters}
             currentEvent={currentEvent}
           >
-            <div className='table-search-container'>
+            <div className="table-search-container">
               <input
-                className='table-search'
-                placeholder='Search by name'
+                className="table-search"
+                placeholder="Search by name"
                 onChange={(e) => {
-                  if (e.target.value === "") {
+                  if (e.target.value === '') {
                     settingTableData();
                     return;
                   }
@@ -760,7 +766,7 @@ export default function EnhancedTable({
                   getFilterData();
                 }}
               />
-              <div className='d-flex a-i-center'>
+              <div className="d-flex a-i-center">
                 <ActiveButton
                   isActive={isActive}
                   handleActive={() => {
@@ -769,7 +775,7 @@ export default function EnhancedTable({
                 />
                 <TablePagination
                   rowsPerPageOptions={[25, 50, 75, 100]}
-                  component='div'
+                  component="div"
                   count={tableRowData.length}
                   rowsPerPage={rowsPerPage}
                   page={page}
@@ -783,9 +789,9 @@ export default function EnhancedTable({
 
           <Table
             className={classes.table}
-            aria-labelledby='tableTitle'
-            size={"small"}
-            aria-label='enhanced table'
+            aria-labelledby="tableTitle"
+            size={'small'}
+            aria-label="enhanced table"
           >
             <EnhancedTableHead
               classes={classes}
@@ -803,14 +809,14 @@ export default function EnhancedTable({
                   <TableCell
                     colSpan={10}
                     style={{
-                      position: "relative",
-                      height: 200
+                      position: 'relative',
+                      height: 200,
                     }}
                   >
                     <FacebookCircularProgress />
                   </TableCell>
                 </TableRow>
-              ) : tableRowData.length > 0 && currentEvent["id"] ? (
+              ) : tableRowData.length > 0 && currentEvent['id'] ? (
                 <>
                   {stableSort(tableRowData, getComparator(order, orderBy))
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -826,97 +832,97 @@ export default function EnhancedTable({
                               handleClick(event, row.rank);
                             }
                           }}
-                          role='checkbox'
+                          role="checkbox"
                           aria-checked={isItemSelected}
                           tabIndex={-1}
-                          key={row.rank + "" + index}
+                          key={row.rank + '' + index}
                           selected={isItemSelected}
                           style={
-                            leaderBoardData["data"] &&
-                            leaderBoardData["data"]["sessionUserRank"] &&
+                            leaderBoardData['data'] &&
+                            leaderBoardData['data']['sessionUserRank'] &&
                             row.rank ==
-                              leaderBoardData["data"]["sessionUserRank"]["rank"]
-                              ? { background: "#e8f5e9" }
+                              leaderBoardData['data']['sessionUserRank']['rank']
+                              ? {background: '#e8f5e9'}
                               : isItemSelected
                               ? {
-                                  backgroundColor: "#e0f2fe"
+                                  backgroundColor: '#e0f2fe',
                                 }
                               : {}
                           }
                         >
                           {pinActive && (
-                            <TableCell padding='checkbox'>
+                            <TableCell padding="checkbox">
                               <Checkbox
                                 onClick={(event) =>
                                   handleClick(event, row.rank)
                                 }
                                 checked={isItemSelected}
-                                inputProps={{ "aria-labelledby": labelId }}
+                                inputProps={{'aria-labelledby': labelId}}
                                 disabled={
-                                  leaderBoardData["data"] &&
-                                  leaderBoardData["data"]["sessionUserRank"] &&
+                                  leaderBoardData['data'] &&
+                                  leaderBoardData['data']['sessionUserRank'] &&
                                   row.rank ==
-                                    leaderBoardData["data"]["sessionUserRank"][
-                                      "rank"
+                                    leaderBoardData['data']['sessionUserRank'][
+                                      'rank'
                                     ]
                                 }
                               />
                             </TableCell>
                           )}
                           <TableCell
-                            component='th'
+                            component="th"
                             id={labelId}
-                            scope='row'
-                            padding='none'
-                            align='center'
+                            scope="row"
+                            padding="none"
+                            align="center"
                           >
-                            <div style={{ fontSize: 12 }}>
-                              {row.rank ? row.rank : "-"}
+                            <div style={{fontSize: 12}}>
+                              {row.rank ? row.rank : '-'}
                             </div>
                           </TableCell>
 
-                          <TableCell align='center'>
+                          <TableCell align="center">
                             <div
                               style={{
-                                display: "flex",
-                                alignItems: "center",
+                                display: 'flex',
+                                alignItems: 'center',
                                 fontSize: 12,
-                                justifyContent: "space-between",
-                                width: "100%"
+                                justifyContent: 'space-between',
+                                width: '100%',
                               }}
                             >
                               <div
                                 style={{
-                                  display: "flex",
-                                  flexDirection: "row",
-                                  justifyContent: "center",
-                                  alignItems: "center"
+                                  display: 'flex',
+                                  flexDirection: 'row',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
                                 }}
                               >
                                 <Avatar
                                   style={{
                                     width: 30,
                                     height: 30,
-                                    marginRight: 5
+                                    marginRight: 5,
                                   }}
                                   src={row.avtarImg}
-                                  className='avatar-component'
+                                  className="avatar-component"
                                 />
-                                <div style={{ width: "max-content" }}>
+                                <div style={{width: 'max-content'}}>
                                   {row.aliasName
                                     ? row.aliasName
                                     : row.userName
                                     ? row.userName
-                                    : "-"}
+                                    : '-'}
                                 </div>
                               </div>
                               <div>
-                                <div style={{ marginLeft: "0.75em" }}>
+                                <div style={{marginLeft: '0.75em'}}>
                                   {row.toolTipMessage && (
                                     <Tooltip
                                       title={row.toolTipMessage}
                                       aria-label={row.toolTipMessage}
-                                      placement='top'
+                                      placement="top"
                                     >
                                       {row.statusImageUrl &&
                                         getStatusImg(row.statusImageUrl)}
@@ -926,32 +932,32 @@ export default function EnhancedTable({
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell align='center'>
-                            <div style={{ fontSize: 12 }}>
-                              {row.gender ? row.gender : "-"}
+                          <TableCell align="center">
+                            <div style={{fontSize: 12}}>
+                              {row.gender ? row.gender : '-'}
                             </div>
                           </TableCell>
-                          <TableCell align='center'>
-                            <div style={{ fontSize: 12 }}>
-                              {row.city ? row.city : "-"}
+                          <TableCell align="center">
+                            <div style={{fontSize: 12}}>
+                              {row.city ? row.city : '-'}
                             </div>
                           </TableCell>
-                          <TableCell align='center'>
+                          <TableCell align="center">
                             <div
                               style={{
                                 fontSize: 12,
                                 cursor:
-                                  (row.dataSource === "WHATSAPP" ||
-                                    row.dataSource === "WEB") &&
+                                  (row.dataSource === 'WHATSAPP' ||
+                                    row.dataSource === 'WEB') &&
                                   row?.whatsappImageDataSet?.length > 0
-                                    ? "pointer"
-                                    : "default"
+                                    ? 'pointer'
+                                    : 'default',
                               }}
                               aria-describedby={id}
                               onClick={(e) => {
                                 if (
-                                  (row.dataSource === "WHATSAPP" ||
-                                    row.dataSource === "WEB") &&
+                                  (row.dataSource === 'WHATSAPP' ||
+                                    row.dataSource === 'WEB') &&
                                   row?.whatsappImageDataSet?.length > 0
                                 ) {
                                   setSelectedUserData(row);
@@ -961,67 +967,85 @@ export default function EnhancedTable({
                             >
                               <img
                                 src={
-                                  (console.log("jhfefbefe", APP),
+                                  (console.log('jhfefbefe', APP),
                                   row.dataSource
                                     ? APP.dataSourceLogo[row.dataSource]
-                                    : "https://walkathon21.s3.ap-south-1.amazonaws.com/logo/NotSet.svg")
+                                    : 'https://walkathon21.s3.ap-south-1.amazonaws.com/logo/NotSet.svg')
                                 }
                                 style={{
                                   width: 30,
-                                  height: 30
+                                  height: 30,
                                 }}
                               />
                             </div>
                           </TableCell>
-                          <TableCell align='center'>
-                            <div style={{ fontSize: 12 }}>
-                              {row.valueTillDate ? row.valueTillDate : "-"}
+                          <TableCell align="center">
+                            <div style={{fontSize: 12}}>
+                              {row.valueTillDate ? row.valueTillDate : '-'}
                             </div>
                           </TableCell>
-                          <TableCell align='center'>
-                            <div style={{ fontSize: 12, display: "flex" }}>
+
+                          <TableCell align="center">
+                            <div style={{fontSize: 12}}>
+                              <img
+                                style={{
+                                  width: 40,
+                                  height: 40,
+                                }}
+                                src="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/Distance/D_14K_Colour_20210930.png"
+                              />
+                            </div>
+                          </TableCell>
+                          <TableCell align="center">
+                            <div
+                              style={{
+                                fontSize: 12,
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                              }}
+                            >
                               {row.lastDistanceCovered
                                 ? row.lastDistanceCovered.toFixed(2)
-                                : "0"}
+                                : '0'}
                               {row.verificationImage ? (
                                 <img
-                                  title='Verified'
+                                  title="Verified"
                                   src={row.verificationImage}
                                   style={{
                                     marginTop: -7,
                                     height: 30,
                                     width: 30,
-                                    marginLeft: 10
+                                    marginLeft: 10,
                                   }}
                                 />
                               ) : (
-                                ""
+                                ''
                               )}
                             </div>
                           </TableCell>
 
-                          <TableCell align='center'>
-                            <div style={{ fontSize: 12 }}>
-                              {row.value ? row.value.toFixed(2) : "0"}
+                          <TableCell align="center">
+                            <div style={{fontSize: 12}}>
+                              {row.value ? row.value.toFixed(2) : '0'}
                             </div>
                           </TableCell>
-                          <TableCell align='center'>
-                            <div style={{ fontSize: 12 }}>
+                          <TableCell align="center">
+                            <div style={{fontSize: 12, width: '50px'}}>
                               {row.averageDistanceCovered
                                 ? row.averageDistanceCovered.toFixed(2)
-                                : "0"}
+                                : '0'}
                             </div>
                           </TableCell>
-                          <TableCell align='center'>
-                            <div style={{ fontSize: 12 }}>
-                              {row.leadBy ? row.leadBy : ""}
+                          <TableCell align="center">
+                            <div style={{fontSize: 12}}>
+                              {row.leadBy ? row.leadBy : ''}
                             </div>
                           </TableCell>
-                          <TableCell align='center'>
-                            <div style={{ fontSize: 12 }}>
+                          <TableCell align="center" style={{maxWidth: '50px'}}>
+                            <div style={{fontSize: 12, maxWidth: '50px'}}>
                               {row.totalParticipationDays
                                 ? row.totalParticipationDays
-                                : "0"}
+                                : '0'}
                             </div>
                           </TableCell>
                         </TableRow>
@@ -1033,19 +1057,19 @@ export default function EnhancedTable({
                   <TableCell
                     colSpan={pinActive ? 11 : 10}
                     style={{
-                      position: "relative",
-                      height: 100
+                      position: 'relative',
+                      height: 100,
                     }}
                   >
                     <p
                       style={{
-                        textAlign: "center",
-                        margin: "100px 0",
-                        color: "#8e8e8e"
+                        textAlign: 'center',
+                        margin: '100px 0',
+                        color: '#8e8e8e',
                       }}
                     >
-                      {leaderBoardData.message === "SUCCESS" ? (
-                        "Data is not present"
+                      {leaderBoardData.message === 'SUCCESS' ? (
+                        'Data is not present'
                       ) : (
                         <NoData />
                       )}
@@ -1063,13 +1087,13 @@ export default function EnhancedTable({
           open,
           anchorEl,
           handleClose,
-          selectedUserData
+          selectedUserData,
         }}
       >
         {open &&
           selectedUserData &&
           selectedUserData.whatsappImageDataSet.length !== 0 && (
-            <ImageCarousel {...{ selectedUserData }} />
+            <ImageCarousel {...{selectedUserData}} />
           )}
       </TableDataSourceCarousel>
     </div>

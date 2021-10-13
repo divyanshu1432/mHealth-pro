@@ -225,7 +225,7 @@ const Dashboard = () => {
       if (res.data.response.responseMessage === 'SUCCESS') {
         let event = res.data.response.responseData?.keyword.eventId;
         seteventId(event);
-        console.log(event, 'event');
+
         let selectedEventFromMainPage =
           res.data.response.responseData?.events?.filter(
             (item) => item.id == localStorage.challengeIDRegister
@@ -1002,7 +1002,7 @@ const Dashboard = () => {
             };
           });
         });
-      console.log(dashboardState.selectedChallenge, 'event');
+      // console.log(dashboardState.selectedChallenge, 'event');
       await getEventGalleryData(eventObj.id).then((galleryResponse) => {
         if (galleryResponse.data.response.responseMessage === 'SUCCESS') {
           setDashboardState((prevState) => {
@@ -1054,7 +1054,7 @@ const Dashboard = () => {
       }
     }
   };
-  console.log(distancelogo, ' logo');
+  // console.log(distancelogo, ' logo');
   return (
     <div className="Dasboard">
       <TopUserDetails />

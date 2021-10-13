@@ -49,7 +49,6 @@ export default function EventInfoModal({
   currentViewTab,
   instruction_details,
 }) {
-
   const [modalStyle] = React.useState(getModalStyle);
   const [registerDetails, setRegisterDetails] = useState({
     eventId: '',
@@ -143,6 +142,7 @@ export default function EventInfoModal({
   const handleClose = () => {
     getOldEvents().then((res) => {
       if (res.data.response.responseMessage === 'SUCCESS') {
+        let event = res.data.response.responseData?.keyword.eventId;
         let allChallengeData = res.data.response.responseData.events;
 
         if (setDashboardState) {
@@ -158,15 +158,26 @@ export default function EventInfoModal({
                     item.timePeriod !== 'FUTURE' &&
                     item.isParticipated
                     ? true
+                    : event !== null
+                    
+                    ? (item.eventView !== 'LINKED' &&
+                        item.eventView !== 'PRIVATE') ||
+                      (item.id == event && item.timePeriod === 'FUTURE') ||
+                      (item.id == event && item.timePeriod === 'CURRENT')
                     : item.eventView !== 'PRIVATE' &&
-                        item.timePeriod !== 'FUTURE';
+                      item.timePeriod !== 'FUTURE';
                 } else {
                   return item.isActive == 1 &&
                     item.timePeriod === 'FUTURE' &&
                     item.isParticipated
                     ? true
+                    : event !== null
+                    ? (item.eventView !== 'LINKED' &&
+                        item.eventView !== 'PRIVATE') ||
+                      (item.id == event && item.timePeriod === 'FUTURE') ||
+                      (item.id == event && item.timePeriod === 'CURRENT')
                     : item.eventView !== 'PRIVATE' &&
-                        item.timePeriod === 'FUTURE';
+                      item.timePeriod === 'FUTURE';
                 }
               }),
             };
@@ -212,116 +223,76 @@ export default function EventInfoModal({
 
     return !Object.values(errorObj).filter((v) => v).length > 0;
   };
-  
-// alert(window.location.href)
 
-// NEW CODE FROM HERE 
+  // alert(window.location.href)
 
-const handel = () =>{
- const str = window.location.href;
- const link = str.substring(0, 22);
-if(link == 'https://global.mhealth'){
-console.log('whegdwdh  ' + challenge.id)
-const arr = [ challenge.id]
-console.log(arr)
-    window.message = Message;
-    const payload = {
-      eventId: parseInt(challenge.id),
-      dataSource: 'WHATSAPP',
-      // healthGoal: registerDetails.healthGoal,
-     
-      registrationSource: 'WEB',
-      // dob: registerDetails.dob,
-      // gender: registerDetails.gender,
-      // city: registerDetails.city,
-      // pinCode: parseInt(registerDetails.pinCode),
-      // emailId: registerDetails.emailId,
-      // state: registerDetails.state,
-    };
-    if (!validateFields()) {
-      return;
+  // NEW CODE FROM HERE
+
+  const handel = () => {
+    const str = window.location.href;
+    const link = str.substring(0, 22);
+    if (link == 'https://global.mhealth') {
+      console.log('whegdwdh  ' + challenge.id);
+      const arr = [challenge.id];
+      console.log(arr);
+      window.message = Message;
+      const payload = {
+        eventId: parseInt(challenge.id),
+        dataSource: 'WHATSAPP',
+        // healthGoal: registerDetails.healthGoal,
+
+        registrationSource: 'WEB',
+        // dob: registerDetails.dob,
+        // gender: registerDetails.gender,
+        // city: registerDetails.city,
+        // pinCode: parseInt(registerDetails.pinCode),
+        // emailId: registerDetails.emailId,
+        // state: registerDetails.state,
+      };
+      if (!validateFields()) {
+        return;
+      }
+      // setRegisteredLoader(true);
+      registerEvent(payload)
+        .then((res) => {
+          if (res.data.response.responseCode === 0) {
+            sendSms({
+              eventName: challenge.challengeName,
+              mobileNumber: localStorage.mobileNumber,
+            });
+
+            setSuccessLinkStatus(true);
+            getActivitySubEvent(challenge.id, payload);
+            location.reload();
+          } else {
+            // setErrorMsg(res.data.response.responseMessage);
+            // setShowDialog(true);
+          }
+          setRegisteredLoader(false);
+        })
+
+        .catch((err) => {
+          message.error('Something went wrong!');
+          setRegisteredLoader(false);
+        });
+      //   getActivitySubEvent(challenge.id  , payload)
+      //  window.open('http://localhost:3000/#/dashboard')
     }
-    // setRegisteredLoader(true);
-    registerEvent(payload)
-      .then((res) => {
-        if (res.data.response.responseCode === 0) {
-        
+  };
 
-          sendSms({
-            eventName: challenge.challengeName,
-            mobileNumber: localStorage.mobileNumber,
-          });
+  // NEW CODE END FROM HERE
 
-           setSuccessLinkStatus(true);
-           getActivitySubEvent(challenge.id  , payload)
-           location.reload()
-        } else {
-          // setErrorMsg(res.data.response.responseMessage);
-          // setShowDialog(true);
-        }
-        setRegisteredLoader(false);
-      })
-
-      .catch((err) => {
-        message.error('Something went wrong!');
-        setRegisteredLoader(false);
-      })
-    //   getActivitySubEvent(challenge.id  , payload)
-    //  window.open('http://localhost:3000/#/dashboard')
-  }
-}
-
-
-
-
-
-
-
-
-
-
-// NEW CODE END FROM HERE 
-
-const render = () => {
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  const render = () => {};
 
   const handleSubmit = () => {
-    console.log(registerDetails.dataSource)
+    console.log(registerDetails.dataSource);
 
     window.message = Message;
     const payload = {
       eventId: parseInt(challenge.id),
       dataSource: registerDetails.dataSource,
       // healthGoal: registerDetails.healthGoal,
-     
+
       registrationSource: 'WEB',
       // dob: registerDetails.dob,
       // gender: registerDetails.gender,
@@ -334,21 +305,20 @@ const render = () => {
       return;
     }
     setRegisteredLoader(true);
-  
+
     registerEvent(payload)
       .then((res) => {
         if (res.data.response.responseCode === 0) {
           message.success('Successfully Registered!');
           localStorage.removeItem('challengeIDRegister');
-  
-       sendSms({
+
+          sendSms({
             eventName: challenge.challengeName,
             mobileNumber: localStorage.mobileNumber,
-          
-          }   );
+          });
 
           setSuccessLinkStatus(true);
-          getActivitySubEvent(challenge.id  , payload)
+          getActivitySubEvent(challenge.id, payload);
           // location.reload()
         } else {
           setErrorMsg(res.data.response.responseMessage);
@@ -359,9 +329,7 @@ const render = () => {
       .catch((err) => {
         message.error('Something went wrong!');
         setRegisteredLoader(false);
-      })   
-    
-
+      });
   };
 
   const handleInputChange = (type, value) => {
@@ -380,11 +348,12 @@ const render = () => {
     }
   };
 
-  const modalBody = 
- 
-
-  (
-    <div style={modalStyle} className={'registration-modal'} onLoad={() => handel()  }>
+  const modalBody = (
+    <div
+      style={modalStyle}
+      className={'registration-modal'}
+      onLoad={() => handel()}
+    >
       <div className="heading">Register Challenge</div>
       <div className="basic-info-container">
         <div className="basic-info register-form">
@@ -710,29 +679,23 @@ const render = () => {
       />
     </div>
   );
-    
-
-      
-
-     
 
   const getMessage = () => {
     const str = window.location.href;
     const link = str.substring(0, 22);
-   if(link != 'https://global.mhealth'){
-    if (instruction_details) {
-      return (
-        <div
-          style={{padding: 10}}
-          dangerouslySetInnerHTML={{
-            __html: instruction_details[registerDetails.dataSource],
-          }}
-        ></div>
-      );
+    if (link != 'https://global.mhealth') {
+      if (instruction_details) {
+        return (
+          <div
+            style={{padding: 10}}
+            dangerouslySetInnerHTML={{
+              __html: instruction_details[registerDetails.dataSource],
+            }}
+          ></div>
+        );
+      }
     }
   };
-}
-
 
   const registrationLinkModalBody = (
     <div style={modalStyle} className={'registration-modal '}>
@@ -766,14 +729,10 @@ const render = () => {
     </div>
   );
 
-
-
-
-
-// const rend = () => {
-//   const str = window.location.href;
-//   const link = str.substring(0, 21);
-//   if(link != 'http://localhost:3000'){
+  // const rend = () => {
+  //   const str = window.location.href;
+  //   const link = str.substring(0, 21);
+  //   if(link != 'http://localhost:3000'){
   return (
     <div>
       <Modal
@@ -786,17 +745,11 @@ const render = () => {
         disableAutoFocus
         disableBackdropClick={true}
       >
-        {
-         
-   
-        !successLinkStatus ? (
-         
-          <div  className="invisible" >  {modalBody}</div>
+        {!successLinkStatus ? (
+          <div className="invisible"> {modalBody}</div>
         ) : (
-          <div style={{outline: 'none'}} >  {registrationLinkModalBody}</div>
-        )
-     
-        }
+          <div style={{outline: 'none'}}> {registrationLinkModalBody}</div>
+        )}
       </Modal>
       {showDialog && (
         <ErrorDialog
@@ -807,11 +760,9 @@ const render = () => {
       )}
     </div>
   );
-      // }
-    // }
-    // useEffect(() => {
-    //   rend();
-    // } , [])
-    
+  // }
+  // }
+  // useEffect(() => {
+  //   rend();
+  // } , [])
 }
-

@@ -85,22 +85,8 @@ const inputPasswordWrapper = (
           />
         </div>
       </div>
-      <div className="forgot-password" style={{marginTop: '7.25em'}}>
-        <button
-          className="is-secondary"
-          onClick={() => {
-            setUserData({
-              ...userData,
-              isPasswordForgotten: true,
-              otp: '',
-              pin: '',
-            });
-          }}
-        >
-          forgot pin?
-        </button>
-      </div>
-      <div className={'submit-button'}>
+
+      <div className={'submit-button'} style={{marginTop: '7.25em'}}>
         {loaderInfo.loginVerification ? (
           <div className="loader">
             <ReactLoadingWrapper
@@ -127,6 +113,21 @@ const inputPasswordWrapper = (
             {'Login'}
           </button>
         )}
+      </div>
+      <div className="forgot-password" style={{marginTop: '1em'}}>
+        <button
+          className="is-secondary"
+          onClick={() => {
+            setUserData({
+              ...userData,
+              isPasswordForgotten: true,
+              otp: '',
+              pin: '',
+            });
+          }}
+        >
+          forgot pin?
+        </button>
       </div>
     </>
   );

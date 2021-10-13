@@ -148,16 +148,27 @@ export const getAchievements = () => {
 };
 
 export const getOldEvents = () => {
-  let str = window.location.href;
-  let link = str.length;
-  let final_link = str.substr(8, link - 31);
+  let str = 'window.location.href';
 
-  let bannerLink = window.location.href;
+  let final_link = '';
+  let link = str.length;
+  {
+    str.substr(str.length - 5) == 'dashboard'
+      ? (final_link = str.substr(8, link - 31))
+      : str.substr(str.length - 15) == 'eventmanagement'
+      ? (final_link = str.substr(8, link - 37))
+      : (final_link = str.substr(8, link - 22));
+  }
+  console.log(final_link);
+  // let link = str.length;
+
+  let bannerLink = 'https://target.mhealth.ai/#/';
   let a_link = bannerLink.length;
   let banner = bannerLink.substr(8, a_link - 22);
 
+  console.log(banner, 'banner');
   const URL = isLoggedIn()
-    ? `${urlPrefix}${getAllEvents}?others=target&userId=${localStorage.getItem(
+    ? `${urlPrefix}${getAllEvents}?others=sponsor&userId=${localStorage.getItem(
         'userId'
       )}`
     : `${urlPrefix}${getAllEvents}?others=target&userId=559`;

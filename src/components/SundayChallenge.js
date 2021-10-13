@@ -8,6 +8,8 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Typography from '@material-ui/core/Typography';
 import {urlPrefix} from '../services/apicollection';
 import axios from 'axios';
+import ReactTooltip from 'react-tooltip';
+
 const SundayChallenge = (props) => {
   const [streak, setstreak] = useState({});
   const [average, setaverage] = useState({});
@@ -117,7 +119,7 @@ const SundayChallenge = (props) => {
   };
 
   let today = new Date().toISOString().slice(0, 10);
-  console.log(Object.entries(streak).length);
+  console.log(Object.entries(distance).length);
   console.log(typeof today);
   useEffect(() => {
     getData();
@@ -126,7 +128,9 @@ const SundayChallenge = (props) => {
 
   return (
     <>
+      <ReactTooltip />
       <div
+        className="sundayCrds"
         style={{
           display: 'flex',
           justifyContent: 'space-between',
@@ -155,7 +159,7 @@ const SundayChallenge = (props) => {
               <h2 style={{}}> Streak </h2>{' '}
             </div>
 
-            {Object.entries(streak).length !== 0 ? (
+            {streak && streak.streakChallenge !== null ? (
               <CardContent>
                 <div style={{display: 'flex', justifyContent: 'space-between'}}>
                   <div style={{width: '30%', marginLeft: -20}}>
@@ -276,21 +280,31 @@ const SundayChallenge = (props) => {
                         color="text.secondary"
                         style={{
                           marginLeft: 25,
-                          fontSize: 15,
+                          fontSize: 12,
                           marginTop: 5,
                           wordSpacing: 3,
                         }}
                       >
-                        <div>
+                        {streakTrack.streakStatus === 'COMPLETED' ? (
                           <div>
-                            {' '}
-                            Challenge Accepted On:{' '}
-                            {streakTrack.challengeThrowDate}{' '}
+                            WOW !! You have Succesfully achieved your target.
                           </div>
-                          <div> Target Date: {streakTrack.targetDate} </div>
-                          {/* Progress: Streak {Current Days}/{Target Days} */}
-                          {/* Percentage Progress bar. */}
-                        </div>
+                        ) : streakTrack.streakStatus === 'FAILED' ? (
+                          <div>
+                            OOPS! You have failed , Better luck next time
+                          </div>
+                        ) : (
+                          <div>
+                            <div>
+                              {' '}
+                              Challenge Accepted On:{' '}
+                              {streakTrack.challengeThrowDate}{' '}
+                            </div>
+                            <div> Target Date: {streakTrack.targetDate} </div>
+                            {/* Progress: Streak {Current Days}/{Target Days} */}
+                            {/* Percentage Progress bar. */}
+                          </div>
+                        )}
                       </Typography>
                     </div>
                   ) : (
@@ -304,26 +318,40 @@ const SundayChallenge = (props) => {
                   // height: 400,
                   padding: '5px',
 
-                  width: '100%',
                   display: 'flex',
-                  flexDirection: 'column',
+                  flexDirection: 'row',
                   fontSize: 12,
-                  display: 'flex',
-                  justifyContent: 'center',
+
+                  justifyContent: 'space-between',
                   alignItems: 'center',
                 }}
                 className=""
               >
                 {' '}
-                <img
-                  style={{width: 120, height: 120}}
-                  src="https://w21.mhealth.ai/static/media/dataSource.11fba1d5.svg"
-                />
-                Data is not present
+                <div style={{width: '30%'}}>
+                  <img
+                    style={{height: 100, width: 100}}
+                    src="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/Streak/S_0X_GreyScale_20210929.png"
+                  />
+                </div>
+                <div>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    style={{marginLeft: 20, fontSize: 12, wordSpacing: 3}}
+                  >
+                    <h4 style={{fontWeight: 'lighter'}}>
+                      {' '}
+                      Your Previous Best Streak was of{' '}
+                      {streak.eventHighestStreak} Days. Achieved between{' '}
+                      {streak.streakFromDate} and {streak.streakToDate}.{' '}
+                    </h4>
+                  </Typography>
+                </div>
               </div>
             )}
 
-            {Object.entries(streak).length !== 0 ? (
+            {streak && streak.streakChallenge !== null ? (
               streakTrack &&
               streakTrack.challengeAction !== 'NO_ACTION_PERFORM' ? (
                 <CardActions
@@ -383,26 +411,25 @@ const SundayChallenge = (props) => {
                       {' '}
                       <div style={{marginLeft: 20}}>
                         {' '}
-                        <progress
-                          style={{width: '300px', height: 30}}
-                          id="file"
-                          value={
-                            streakTrack &&
-                            (parseInt(streakTrack.streakCount) * 100) /
-                              streakTrack.dayChallenge
-                          }
-                          max="100"
-                        />
+                        {streakTrack.streakStatus !== 'COMPLETED' ? (
+                          <progress
+                            style={{width: '300px'}}
+                            id="file"
+                            value={
+                              streakTrack && parseInt(streakTrack.streakAverage)
+                            }
+                            max="100"
+                            data-tip={streakTrack.streakAverage}
+                          />
+                        ) : (
+                          <progress
+                            style={{width: '300px'}}
+                            id="file"
+                            value="100"
+                            max="100"
+                          />
+                        )}
                       </div>{' '}
-                      <p style={{marginTop: 5}}>
-                        {' '}
-                        {streakTrack &&
-                          (
-                            (parseInt(streakTrack.streakCount) * 100) /
-                            streakTrack.dayChallenge
-                          ).toFixed(1)}
-                        %{' '}
-                      </p>
                     </div>
                   )}
                 </CardActions>
@@ -410,33 +437,28 @@ const SundayChallenge = (props) => {
                 ''
               )
             ) : (
-              ''
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                style={{
+                  fontSize: 12,
+                  wordSpacing: 3,
+                }}
+              >
+                <h4
+                  style={{
+                    textAlign: 'right',
+                    fontWeight: 'lighter',
+                    marginRight: 20,
+                    marginTop: -15,
+                  }}
+                >
+                  {' '}
+                  Challenge not available{' '}
+                </h4>
+              </Typography>
             )}
           </div>
-          {/* ) : (
-            <div
-              style={{
-                // height: 400,
-                padding: '5px',
-
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                fontSize: 12,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              className=""
-            >
-              {' '}
-              <img
-                style={{width: 120, height: 120}}
-                src="https://w21.mhealth.ai/static/media/dataSource.11fba1d5.svg"
-              />
-              Data is not present
-            </div>
-          )} */}
         </Card>
         <Card
           style={{
@@ -458,7 +480,7 @@ const SundayChallenge = (props) => {
             {' '}
             <h2 style={{}}> Distance </h2>{' '}
           </div>
-          {Object.entries(distance).length !== 0 ? (
+          {distance && distance.kmchallenge !== null ? (
             <CardContent>
               <div style={{display: 'flex', justifyContent: 'space-between'}}>
                 <div style={{width: '30%', marginLeft: -20}}>
@@ -473,7 +495,7 @@ const SundayChallenge = (props) => {
                   ) : distanceTrack.challengeAction === 'ACCEPT' ? (
                     <img
                       style={{height: 100, width: 100}}
-                      src={distance ? distance.kmLogo : distanceTrack.kmLogo}
+                      src={distanceTrack.kmLogo}
                     />
                   ) : distanceTrack.challengeAction === 'NO_CHALLENGE' ? (
                     <img
@@ -579,43 +601,25 @@ const SundayChallenge = (props) => {
                         fontSize: 12,
                       }}
                     >
-                      <div>
+                      {distanceTrack.kmStatus === 'COMPLETED' ? (
                         <div>
-                          {' '}
-                          Challenge accepted on :{' '}
-                          {distanceTrack.challengeThrowDate}{' '}
+                          WOW !! You have Succesfully achieved your target.
                         </div>
-                        <div> Target date : {distanceTrack.targetDate} </div>
-                        <div> Status : {distanceTrack.kmStatus} </div>
-                      </div>
+                      ) : (
+                        <div>
+                          <div>
+                            {' '}
+                            Challenge accepted on :{' '}
+                            {distanceTrack.challengeThrowDate}{' '}
+                          </div>
+                          <div> Target date : {distanceTrack.targetDate} </div>
+                          {/* <div> Status : {distanceTrack.kmStatus} </div> */}
+                        </div>
+                      )}
                     </Typography>
                   </div>
                 )}
               </div>
-              {/* ) : (
-              <div
-                style={{
-                  // height: 400,
-                  padding: '5px',
-
-                  width: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  fontSize: 12,
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-                className=""
-              >
-                {' '}
-                <img
-                  style={{width: 120, height: 120}}
-                  src="https://w21.mhealth.ai/static/media/dataSource.11fba1d5.svg"
-                />
-                Data is not present
-              </div>
-              )} */}
             </CardContent>
           ) : (
             <div
@@ -623,25 +627,38 @@ const SundayChallenge = (props) => {
                 // height: 400,
                 padding: '5px',
 
-                width: '100%',
                 display: 'flex',
-                flexDirection: 'column',
+                flexDirection: 'row',
                 fontSize: 12,
-                display: 'flex',
-                justifyContent: 'center',
+
+                justifyContent: 'space-between',
                 alignItems: 'center',
               }}
               className=""
             >
               {' '}
-              <img
-                style={{width: 120, height: 120}}
-                src="https://w21.mhealth.ai/static/media/dataSource.11fba1d5.svg"
-              />
-              Data is not present
+              <div style={{width: '30%'}}>
+                <img
+                  style={{height: 100, width: 100}}
+                  src="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/Distance/D_0K_GreyScale_20210929.png"
+                />
+              </div>
+              <div style={{width: '80%'}}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  style={{marginLeft: 20, fontSize: 12, wordSpacing: 3}}
+                >
+                  {' '}
+                  <h4 style={{width: '80%', fontWeight: 'lighter'}}>
+                    Your Previous Best Distance covered in a day was of{' '}
+                    {distance.eventMaxKM} KMs. Achieved on {distance.maxKMDate}.{' '}
+                  </h4>
+                </Typography>{' '}
+              </div>
             </div>
           )}
-          {Object.entries(distance).length !== 0 ? (
+          {distance && distance.kmchallenge !== null ? (
             distanceTrack &&
             distanceTrack.challengeAction !== 'NO_ACTION_PERFORM' ? (
               <CardActions
@@ -694,11 +711,19 @@ const SundayChallenge = (props) => {
                   <>
                     {' '}
                     <div style={{display: 'flex', flexDirection: 'column'}}>
-                      <p style={{textAlign: 'right', marginTop: -15}}>
+                      {/* <p style={{textAlign: 'right'}}>
                         {' '}
                         {distanceTrack && distanceTrack.kmStatus}{' '}
-                      </p>
-                      <progress style={{width: '300px'}} />{' '}
+                      </p> */}
+                      {distanceTrack.kmStatus == 'NOT YET COMPLETED' ? (
+                        <progress style={{width: '300px'}} />
+                      ) : (
+                        <progress
+                          style={{width: '300px'}}
+                          value="100"
+                          max="100"
+                        />
+                      )}{' '}
                     </div>{' '}
                   </>
                 )}
@@ -707,7 +732,26 @@ const SundayChallenge = (props) => {
               ''
             )
           ) : (
-            ''
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              style={{
+                fontSize: 12,
+                wordSpacing: 3,
+              }}
+            >
+              <h4
+                style={{
+                  textAlign: 'right',
+                  fontWeight: 'lighter',
+                  marginRight: 20,
+                  marginTop: -15,
+                }}
+              >
+                {' '}
+                Challenge not available{' '}
+              </h4>
+            </Typography>
           )}
         </Card>{' '}
         <Card
@@ -730,7 +774,7 @@ const SundayChallenge = (props) => {
             {' '}
             <h2 style={{}}> Average </h2>{' '}
           </div>
-          {Object.entries(distance).length !== 0 ? (
+          {average && average.weekAvgChallenge !== null ? (
             <CardContent>
               <div style={{display: 'flex', justifyContent: 'space-between'}}>
                 <div style={{width: '30%', marginLeft: -20}}>
@@ -745,7 +789,7 @@ const SundayChallenge = (props) => {
                   ) : averageTrack.challengeAction === 'ACCEPT' ? (
                     <img
                       style={{height: 100, width: 100}}
-                      src={average ? average.avgLogo : averageTrack.avgLogo}
+                      src={averageTrack.avgLogo}
                     />
                   ) : averageTrack.challengeAction === 'NO_CHALLENGE' ? (
                     <img
@@ -834,65 +878,46 @@ const SundayChallenge = (props) => {
                       color="text.secondary"
                       style={{
                         marginLeft: 25,
-                        fontSize: 15,
+                        fontSize: 12,
                         marginTop: 5,
                         wordSpacing: 3,
                       }}
                     >
                       {/* Challenge Accepted On: {Date} */}
-
-                      <div style={{marginLeft: 20, fontSize: 12}}>
-                        {' '}
-                        <div> Target Date: {averageTrack.targetDate}</div>
+                      {averageTrack.avgWeekStatus === 'COMPLETED' ? (
                         <div>
-                          {' '}
-                          Progress: <b> {averageTrack.progressPercentage} %</b>
+                          WOW !! You have Succesfully achieved your target.
                         </div>
-                        <div>
+                      ) : averageTrack.avgWeekStatus === 'FAILED' ? (
+                        <div>OOPS! You have failed , Better luck next time</div>
+                      ) : (
+                        <div style={{marginLeft: 20, fontSize: 12}}>
                           {' '}
-                          Remaining Days : <b> {averageTrack.remainingDay} </b>
-                        </div>
-                        <div>
-                          {' '}
-                          Required Average for Remaining Days:{' '}
-                          <b>
+                          <div> Target Date: {averageTrack.targetDate}</div>
+                          <div>
                             {' '}
-                            {averageTrack.remainAvgPercentage}{' '}
-                          </b> KM/Day{' '}
+                            Progress:{' '}
+                            <b> {averageTrack.progressPercentage} %</b>
+                          </div>
+                          <div>
+                            {' '}
+                            Remaining Days :{' '}
+                            <b> {averageTrack.remainingDay} </b>
+                          </div>
+                          <div>
+                            {' '}
+                            Required Average for Remaining Days:{' '}
+                            <b>
+                              {' '}
+                              {averageTrack.remainAvgPercentage}{' '}
+                            </b> KM/Day{' '}
+                          </div>
                         </div>
-                      </div>
-                      {/* You accepted challenge for{' '}
-                    <strong> {distanceTrack.kmChallenge} </strong> Kms
-                    <strong> {distanceTrack.remainWeekDay} </strong> Days
-                    remainig to complete */}
+                      )}
                     </Typography>
                   </div>
                 )}
               </div>
-              {/* ) : (
-              <div
-                style={{
-                  // height: 400,
-                  padding: '5px',
-
-                  width: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  fontSize: 12,
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-                className=""
-              >
-                {' '}
-                <img
-                  style={{width: 120, height: 120}}
-                  src="https://w21.mhealth.ai/static/media/dataSource.11fba1d5.svg"
-                />
-                Data is not present
-              </div>
-              )} */}
             </CardContent>
           ) : (
             <div
@@ -900,25 +925,40 @@ const SundayChallenge = (props) => {
                 // height: 400,
                 padding: '5px',
 
-                width: '100%',
                 display: 'flex',
-                flexDirection: 'column',
+                flexDirection: 'row',
                 fontSize: 12,
-                display: 'flex',
-                justifyContent: 'center',
+
+                justifyContent: 'space-between',
                 alignItems: 'center',
               }}
               className=""
             >
               {' '}
-              <img
-                style={{width: 120, height: 120}}
-                src="https://w21.mhealth.ai/static/media/dataSource.11fba1d5.svg"
-              />
-              Data is not present
+              <div style={{width: '30%'}}>
+                <img
+                  style={{height: 100, width: 100}}
+                  src="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/Average/A_0K_GreyScale_20210929.png"
+                />
+              </div>
+              <div>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  style={{marginLeft: 20, fontSize: 12, wordSpacing: 3}}
+                >
+                  {' '}
+                  <h4 style={{width: '80%', fontWeight: 'lighter'}}>
+                    {' '}
+                    Your Previous Best Weekly average was of{' '}
+                    {average.eventMaxWeekAverage} KMs/Week. Achieved from{' '}
+                    {average.weekAvgFromDate} to {average.weekAvgToDate}{' '}
+                  </h4>
+                </Typography>
+              </div>
             </div>
           )}
-          {Object.entries(distance).length !== 0 ? (
+          {average && average.weekAvgChallenge !== null ? (
             averageTrack &&
             averageTrack.challengeAction !== 'NO_ACTION_PERFORM' ? (
               <CardActions
@@ -984,16 +1024,26 @@ const SundayChallenge = (props) => {
                       }}
                     >
                       {' '}
-                      <p style={{textAlign: 'right'}}>
+                      {/* <p style={{textAlign: 'right'}}>
                         {' '}
                         {averageTrack && averageTrack.avgWeekStatus}{' '}
-                      </p>
-                      <progress
-                        style={{width: '300px', marginTop: -10}}
-                        id="file"
-                        value={averageTrack.progressPercentage}
-                        max="100"
-                      />
+                      </p> */}
+                      {averageTrack.avgWeekStatus !== 'COMPLETED' ? (
+                        <progress
+                          style={{width: '300px'}}
+                          id="file"
+                          value={averageTrack.progressPercentage}
+                          max="100"
+                          data-tip={averageTrack.progressPercentage}
+                        />
+                      ) : (
+                        <progress
+                          style={{width: '300px'}}
+                          id="file"
+                          value="100"
+                          max="100"
+                        />
+                      )}
                     </div>{' '}
                   </div>
                 )}
@@ -1002,7 +1052,26 @@ const SundayChallenge = (props) => {
               ''
             )
           ) : (
-            ''
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              style={{
+                fontSize: 12,
+                wordSpacing: 3,
+              }}
+            >
+              <h4
+                style={{
+                  textAlign: 'right',
+                  fontWeight: 'lighter',
+                  marginRight: 20,
+                  marginTop: -15,
+                }}
+              >
+                {' '}
+                Challenge not available{' '}
+              </h4>
+            </Typography>
           )}
         </Card>{' '}
       </div>

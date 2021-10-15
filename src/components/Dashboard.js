@@ -136,6 +136,7 @@ const Dashboard = () => {
     fetchChallenges();
   }, []);
 
+  console.log(distancelogo, 'distancelogo');
   useEffect(() => {
     if (localStorage.cid && localStorage.time && localStorage.status) {
       const action = window.atob(localStorage.status);

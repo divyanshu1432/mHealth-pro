@@ -79,8 +79,7 @@ const UpcomingEvents = (props) => {
     .filter((item) => item.challegeBanner)
     .map((item) => item.challegeBanner);
 
-  const hyperlink = window.location.href;
-  const uplink = hyperlink.substring(0, 22);
+  console.log(upcomingEventList, 'ARRAY');
 
   const getUpcomingEventList = () => {
     if (code == '') {

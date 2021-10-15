@@ -186,13 +186,13 @@ const headCells = [
   //   disablePadding: true
   // },
   {
-    label: 'Total Km',
+    label: 'T. Km',
     id: 'value',
     numeric: true,
     disablePadding: true,
   },
   {
-    label: 'Average Km',
+    label: 'Avg Km',
     id: 'averageDistanceCovered',
     numeric: true,
     disablePadding: true,
@@ -204,7 +204,7 @@ const headCells = [
     disablePadding: true,
   },
   {
-    label: 'Active Days',
+    label: 'Days',
     id: 'totalParticipationDays',
     numeric: true,
     disablePadding: true,
@@ -239,6 +239,7 @@ function EnhancedTableHead(props) {
         )}
         {headCells.map((headCell) => (
           <TableCell
+            style={{maxWidth: 50}}
             key={headCell.id}
             align="center"
             padding={headCell.disablePadding ? 'none' : 'default'}
@@ -967,10 +968,9 @@ export default function EnhancedTable({
                             >
                               <img
                                 src={
-                                  (console.log('jhfefbefe', APP),
                                   row.dataSource
                                     ? APP.dataSourceLogo[row.dataSource]
-                                    : 'https://walkathon21.s3.ap-south-1.amazonaws.com/logo/NotSet.svg')
+                                    : 'https://walkathon21.s3.ap-south-1.amazonaws.com/logo/NotSet.svg'
                                 }
                                 style={{
                                   width: 30,
@@ -980,25 +980,33 @@ export default function EnhancedTable({
                             </div>
                           </TableCell>
                           <TableCell align="center">
-                            <div style={{fontSize: 12}}>
+                            <div style={{fontSize: 12, width: 70}}>
                               {row.valueTillDate ? row.valueTillDate : '-'}
                             </div>
                           </TableCell>
 
                           <TableCell align="center">
                             <div style={{fontSize: 12}}>
-                              <img
-                                style={{
-                                  width: 40,
-                                  height: 40,
-                                }}
-                                src="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/Distance/D_14K_Colour_20210930.png"
-                              />
+                              {row.achievementIcon ? (
+                                <img
+                                  style={{
+                                    width: 35,
+                                    height: 35,
+                                    borderRadius: '100%',
+                                  }}
+                                  src={
+                                    row.achievementIcon && row.achievementIcon
+                                  }
+                                />
+                              ) : (
+                                ''
+                              )}
                             </div>
                           </TableCell>
                           <TableCell align="center">
                             <div
                               style={{
+                                width: 80,
                                 fontSize: 12,
                                 display: 'flex',
                                 justifyContent: 'space-between',
@@ -1030,18 +1038,18 @@ export default function EnhancedTable({
                             </div>
                           </TableCell>
                           <TableCell align="center">
-                            <div style={{fontSize: 12, width: '50px'}}>
+                            <div style={{fontSize: 12, width: 20}}>
                               {row.averageDistanceCovered
                                 ? row.averageDistanceCovered.toFixed(2)
                                 : '0'}
                             </div>
                           </TableCell>
                           <TableCell align="center">
-                            <div style={{fontSize: 12}}>
+                            <div style={{fontSize: 12, width: 30}}>
                               {row.leadBy ? row.leadBy : ''}
                             </div>
                           </TableCell>
-                          <TableCell align="center" style={{maxWidth: '50px'}}>
+                          <TableCell align="center" style={{width: 30}}>
                             <div style={{fontSize: 12, maxWidth: '50px'}}>
                               {row.totalParticipationDays
                                 ? row.totalParticipationDays

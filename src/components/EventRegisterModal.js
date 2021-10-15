@@ -159,7 +159,6 @@ export default function EventInfoModal({
                     item.isParticipated
                     ? true
                     : event !== null
-                    
                     ? (item.eventView !== 'LINKED' &&
                         item.eventView !== 'PRIVATE') ||
                       (item.id == event && item.timePeriod === 'FUTURE') ||

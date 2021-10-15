@@ -8,16 +8,41 @@ import CardHeader from '@material-ui/core/CardHeader';
 import Typography from '@material-ui/core/Typography';
 import {urlPrefix} from '../services/apicollection';
 import axios from 'axios';
+import {Modal} from 'react-responsive-modal';
 import ReactTooltip from 'react-tooltip';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 const SundayChallenge = (props) => {
   const [streak, setstreak] = useState({});
   const [average, setaverage] = useState({});
   const [distance, setdistance] = useState({});
-
+  const [value, setvalue] = useState('');
+  const [action, setaction] = useState('');
+  const [type, settype] = useState('');
   const [distanceTrack, setdistanceTrack] = useState({});
   const [averageTrack, setaverageTrack] = useState({});
   const [streakTrack, setstreakTrack] = useState({});
+  const [joinModal, setjoinModal] = useState(false);
+  const onjoinModal = (a, b, c) => {
+    console.log(a, b, c);
+    setaction(a);
+    settype(b);
+    setvalue(c);
+    if (b === 'DAY') {
+      randomStreak(a, b, c, props.eventId);
+    }
+    if (b === 'KM') {
+      randomkm(a, b, c, props.eventId);
+    }
+    if (b === 'AVG') {
+      randomAvg(a, b, c, props.eventId);
+    }
+    setjoinModal(true);
+  };
+  const onclosejoinModal = () => {
+    getData();
+    setjoinModal(false);
+  };
   const getData = () => {
     const url = `${urlPrefix}v1.0/throwWeeklySundayChallenge?challengerZoneId=${props.eventId}
     `;
@@ -76,8 +101,19 @@ const SundayChallenge = (props) => {
       )
       .then(() => {
         trackPerformance();
+        onclosejoinModal();
       });
   };
+
+  const closeIcon = (
+    <svg fill="white" viewBox="0 0 20 20" width={28} height={28}>
+      <path
+        fillRule="evenodd"
+        d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+        clipRule="evenodd"
+      ></path>
+    </svg>
+  );
 
   const trackPerformance = () => {
     const url = `${urlPrefix}v1.0/trackPerformanceOfChallenge?challengerZoneId=${props.eventId}
@@ -118,9 +154,85 @@ const SundayChallenge = (props) => {
       });
   };
 
+  const randomAvg = (a, b, c, d) => {
+    const url = `${urlPrefix}v1.0/throwChallengeAfterIgnoreOrRandom?challengeAction=${a}&challengeType=${b}&challengeValue=${c}&challengerZoneId=${d}
+`;
+    return axios
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          timeStamp: 'timestamp',
+          accept: '*/*',
+          'Access-Control-Allow-Origin': '*',
+          withCredentials: true,
+          'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
+          'Access-Control-Allow-Headers':
+            'accept, content-type, x-access-token, x-requested-with',
+        },
+      })
+      .then((res) => {
+        {
+          res.data.response.responseData &&
+          res.data.response.responseData?.weekAvgSundayChallenge
+            ? setaverage(res.data.response.responseData.weekAvgSundayChallenge)
+            : setaverage({});
+        }
+      });
+  };
+
+  const randomStreak = (a, b, c, d) => {
+    const url = `${urlPrefix}v1.0/throwChallengeAfterIgnoreOrRandom?challengeAction=${a}&challengeType=${b}&challengeValue=${c}&challengerZoneId=${d}
+`;
+    return axios
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          timeStamp: 'timestamp',
+          accept: '*/*',
+          'Access-Control-Allow-Origin': '*',
+          withCredentials: true,
+          'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
+          'Access-Control-Allow-Headers':
+            'accept, content-type, x-access-token, x-requested-with',
+        },
+      })
+      .then((res) => {
+        {
+          res.data.response.responseData &&
+          res.data.response.responseData?.streakSundayChallenge
+            ? setstreak(res.data.response.responseData?.streakSundayChallenge)
+            : setstreak({});
+        }
+      });
+  };
+
+  const randomkm = (a, b, c, d) => {
+    const url = `${urlPrefix}v1.0/throwChallengeAfterIgnoreOrRandom?challengeAction=${a}&challengeType=${b}&challengeValue=${c}&challengerZoneId=${d}
+`;
+    return axios
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          timeStamp: 'timestamp',
+          accept: '*/*',
+          'Access-Control-Allow-Origin': '*',
+          withCredentials: true,
+          'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
+          'Access-Control-Allow-Headers':
+            'accept, content-type, x-access-token, x-requested-with',
+        },
+      })
+      .then((res) => {
+        {
+          res.data.response.responseData &&
+          res.data.response.responseData?.kmSundayChallenge
+            ? setdistance(res.data.response.responseData?.kmSundayChallenge)
+            : setdistance({});
+        }
+      });
+  };
+
   let today = new Date().toISOString().slice(0, 10);
-  console.log(Object.entries(distance).length);
-  console.log(typeof today);
   useEffect(() => {
     getData();
     trackPerformance();
@@ -129,6 +241,345 @@ const SundayChallenge = (props) => {
   return (
     <>
       <ReactTooltip />
+      <Modal
+        open={joinModal}
+        styles={{modal: {borderRadius: '10px'}}}
+        onClose={onclosejoinModal}
+        center
+        closeIcon={closeIcon}
+      >
+        <CancelIcon
+          style={{
+            position: 'absolute',
+            top: 15,
+            right: 15,
+            color: '#ef5350',
+            cursor: 'pointer',
+          }}
+        />
+
+        <div
+          style={{
+            padding: '20px',
+            paddingLeft: '5px',
+            paddingBottom: '0px',
+            paddingTop: '10px',
+          }}
+        >
+          {type === 'DAY' ? (
+            <Card
+              style={{
+                width: '370px',
+                borderTopLeftRadius: '10px',
+                borderTopRightRadius: '10px',
+              }}
+            >
+              <CardContent>
+                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                  <div style={{width: '30%', marginLeft: -20}}>
+                    {' '}
+                    <img
+                      style={{height: 100, width: 100}}
+                      src={streak && streak.streakLogo}
+                    />
+                  </div>
+                  <div>
+                    <>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        style={{marginLeft: 20, fontSize: 12}}
+                      >
+                        Your Previous Best Streak was of{' '}
+                        <strong> {streak && streak.eventHighestStreak} </strong>{' '}
+                        Days. Achieved between{' '}
+                        <strong> {streak && streak.streakToDate} </strong> and{' '}
+                        <strong> {streak && streak.streakFromDate} </strong>
+                      </Typography>
+
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        style={{marginTop: 5, marginLeft: 20, fontSize: 12}}
+                      >
+                        Would you like to up the mark and accept a challenge for{' '}
+                        <strong>
+                          {' '}
+                          {streak &&
+                            streak.streakChallenge &&
+                            streak.streakChallenge}{' '}
+                        </strong>{' '}
+                        Days?
+                        <p>
+                          {' '}
+                          <strong>
+                            {' '}
+                            <span style={{color: 'red'}}>* </span>
+                            Target to be achieved on or before{' '}
+                            <strong>
+                              {' '}
+                              {streak && streak.targetedStreakDate}.{' '}
+                            </strong>{' '}
+                          </strong>{' '}
+                        </p>
+                      </Typography>
+                    </>
+                  </div>
+                </div>
+              </CardContent>
+              <CardActions
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-around',
+                  marginTop: -15,
+                }}
+              >
+                {' '}
+                <button
+                  style={{width: 130, height: 25}}
+                  className="is-success"
+                  onClick={() => {
+                    acceptOrReject(
+                      'accept',
+                      'DAY',
+                      streak ? streak.streakChallenge : '',
+                      props.eventId
+                    );
+                  }}
+                >
+                  Accept
+                </button>
+                <button
+                  style={{
+                    background: '#F43F5E',
+                    color: 'white',
+                    width: 130,
+                    height: 25,
+                  }}
+                  onClick={() => {
+                    acceptOrReject(
+                      'ignore',
+                      'DAY',
+                      streak ? streak.streakChallenge : '',
+                      props.eventId
+                    );
+                  }}
+                >
+                  Ignore
+                </button>
+              </CardActions>
+            </Card>
+          ) : type === 'KM' ? (
+            <Card
+              style={{
+                width: '370px',
+                borderTopLeftRadius: '10px',
+                borderTopRightRadius: '10px',
+              }}
+            >
+              <CardContent>
+                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                  <div style={{width: '30%', marginLeft: -20}}>
+                    {' '}
+                    <img
+                      style={{height: 100, width: 100}}
+                      src={distance && distance.kmLogo}
+                    />
+                  </div>
+                  <div style={{display: 'flex', flexDirection: 'column'}}>
+                    <>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        style={{marginLeft: 20, fontSize: 12, wordSpacing: 3}}
+                      >
+                        Your Previous Best Distance covered in a day was of{' '}
+                        <strong> {distance && distance.eventMaxKM} </strong>
+                        KMs.Achieved on
+                        <strong> {distance && distance.maxKMDate} </strong>
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        style={{
+                          marginLeft: 20,
+                          fontSize: 12,
+                          marginTop: 5,
+                          wordSpacing: 3,
+                        }}
+                      >
+                        {' '}
+                        Would you like to up the mark and accept a challenge for{' '}
+                        <strong> {distance && distance.kmchallenge} </strong>
+                        KMs?
+                        <p>
+                          {' '}
+                          <strong>
+                            {' '}
+                            <span style={{color: 'red'}}>* </span>
+                            Target to be achieved on or before{' '}
+                            <strong>
+                              {' '}
+                              {distance && distance.targetedKmDate}.{' '}
+                            </strong>
+                          </strong>{' '}
+                        </p>
+                      </Typography>
+                    </>
+                  </div>
+                </div>
+              </CardContent>
+              <CardActions
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-around',
+                  marginTop: -15,
+                }}
+              >
+                {' '}
+                <button
+                  style={{width: 130, height: 25}}
+                  className="is-success"
+                  onClick={() => {
+                    acceptOrReject(
+                      'accept',
+                      'KM',
+                      distance ? distance.kmchallenge : '',
+                      props.eventId
+                    );
+                  }}
+                >
+                  Accept
+                </button>
+                <button
+                  style={{
+                    background: '#F43F5E',
+                    color: 'white',
+                    width: 130,
+                    height: 25,
+                  }}
+                  onClick={() => {
+                    acceptOrReject(
+                      'ignore',
+                      'KM',
+                      distance ? distance.kmchallenge : '',
+                      props.eventId
+                    );
+                  }}
+                >
+                  Ignore
+                </button>
+              </CardActions>
+            </Card>
+          ) : type === 'AVG' ? (
+            <Card
+              style={{
+                width: '370px',
+                borderTopLeftRadius: '10px',
+                borderTopRightRadius: '10px',
+              }}
+            >
+              <CardContent>
+                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                  <div style={{width: '30%', marginLeft: -20}}>
+                    {' '}
+                    <img
+                      style={{height: 100, width: 100}}
+                      src={average && average.avgLogo}
+                    />
+                  </div>
+                  <div style={{display: 'flex', flexDirection: 'column'}}>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      style={{marginLeft: 20, fontSize: 12, wordSpacing: 3}}
+                    >
+                      Your Previous Best Weekly average was of{' '}
+                      {average && average.eventMaxWeekAverage} KMs/Week.
+                      Achieved from {average && average.weekAvgFromDate} to{' '}
+                      {average && average.weekAvgToDate}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      style={{
+                        marginLeft: 20,
+                        marginTop: 5,
+                        fontSize: 12,
+                        wordSpacing: 3,
+                      }}
+                    >
+                      Would you like to up the mark and accept a challenge for{' '}
+                      {average && average.weekAvgChallenge}
+                      KMs/Week?
+                      <p>
+                        {' '}
+                        <strong>
+                          {' '}
+                          <span style={{color: 'red'}}>* </span>
+                          Target to be achieved on or before{' '}
+                          {average && average.targetedAvgDate}.{' '}
+                        </strong>{' '}
+                      </p>
+                    </Typography>
+                  </div>
+                </div>
+              </CardContent>
+              <CardActions
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-around',
+                  marginTop: -15,
+                }}
+              >
+                <div>
+                  <button
+                    style={{width: 130, height: 25}}
+                    className="is-success"
+                    onClick={() => {
+                      acceptOrReject(
+                        'accept',
+                        'AVG',
+                        average ? average.weekAvgChallenge : '',
+                        props.eventId
+                      );
+                    }}
+                  >
+                    Accept
+                  </button>
+                  <button
+                    style={{
+                      background: '#F43F5E',
+                      color: 'white',
+                      width: 130,
+                      height: 25,
+                    }}
+                    // onClick={() =>
+                    //   onjoinModal(
+                    //     'ignore',
+                    //     'AVG',
+                    //     average ? average.weekAvgChallenge : ''
+                    //   )
+                    // }
+                    onClick={() => {
+                      acceptOrReject(
+                        'ignore',
+                        'AVG',
+                        average ? average.weekAvgChallenge : '',
+                        props.eventId
+                      );
+                    }}
+                  >
+                    Ignore
+                  </button>{' '}
+                </div>
+              </CardActions>
+            </Card>
+          ) : (
+            ''
+          )}
+        </div>
+      </Modal>
       <div
         className="sundayCrds"
         style={{
@@ -159,7 +610,9 @@ const SundayChallenge = (props) => {
               <h2 style={{}}> Streak </h2>{' '}
             </div>
 
-            {streak && streak.streakChallenge !== null ? (
+            {(streak && streak.streakChallenge !== null) ||
+            streakTrack.challengeAction === 'IGNORE' ||
+            streakTrack.challengeAction === 'ACCEPT' ? (
               <CardContent>
                 <div style={{display: 'flex', justifyContent: 'space-between'}}>
                   <div style={{width: '30%', marginLeft: -20}}>
@@ -204,44 +657,50 @@ const SundayChallenge = (props) => {
                         wordSpacing: 3,
                       }}
                     >
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        style={{marginLeft: 20, fontSize: 12}}
-                      >
-                        Your Previous Best Streak was of{' '}
-                        <strong> {streak && streak.eventHighestStreak} </strong>{' '}
-                        Days. Achieved between{' '}
-                        <strong> {streak && streak.streakToDate} </strong> and{' '}
-                        <strong> {streak && streak.streakFromDate} </strong>
-                      </Typography>
-
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        style={{marginTop: 5, marginLeft: 20, fontSize: 12}}
-                      >
-                        Would you like to up the mark and accept a challenge for{' '}
-                        <strong>
-                          {' '}
-                          {streak &&
-                            streak.streakChallenge &&
-                            streak.streakChallenge}{' '}
-                        </strong>{' '}
-                        Days?
-                        <p>
-                          {' '}
+                      <>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          style={{marginLeft: 20, fontSize: 12}}
+                        >
+                          Your Previous Best Streak was of{' '}
                           <strong>
                             {' '}
-                            <span style={{color: 'red'}}>* </span>
-                            Target to be achieved on or before{' '}
+                            {streak && streak.eventHighestStreak}{' '}
+                          </strong>{' '}
+                          Days. Achieved between{' '}
+                          <strong> {streak && streak.streakToDate} </strong> and{' '}
+                          <strong> {streak && streak.streakFromDate} </strong>
+                        </Typography>
+
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          style={{marginTop: 5, marginLeft: 20, fontSize: 12}}
+                        >
+                          Would you like to up the mark and accept a challenge
+                          for{' '}
+                          <strong>
+                            {' '}
+                            {streak &&
+                              streak.streakChallenge &&
+                              streak.streakChallenge}{' '}
+                          </strong>{' '}
+                          Days?
+                          <p>
+                            {' '}
                             <strong>
                               {' '}
-                              {streak && streak.targetedStreakDate}.{' '}
+                              <span style={{color: 'red'}}>* </span>
+                              Target to be achieved on or before{' '}
+                              <strong>
+                                {' '}
+                                {streak && streak.targetedStreakDate}.{' '}
+                              </strong>{' '}
                             </strong>{' '}
-                          </strong>{' '}
-                        </p>
-                      </Typography>
+                          </p>
+                        </Typography>
+                      </>
                     </div>
                   ) : (streakTrack &&
                       streakTrack.challengeAction === 'IGNORE') ||
@@ -291,7 +750,8 @@ const SundayChallenge = (props) => {
                           </div>
                         ) : streakTrack.streakStatus === 'FAILED' ? (
                           <div>
-                            OOPS! You have failed , Better luck next time
+                            Oops! Challenge is unachievable now. Better luck
+                            next time
                           </div>
                         ) : (
                           <div>
@@ -342,16 +802,16 @@ const SundayChallenge = (props) => {
                   >
                     <h4 style={{fontWeight: 'lighter'}}>
                       {' '}
-                      Your Previous Best Streak was of{' '}
-                      {streak.eventHighestStreak} Days. Achieved between{' '}
-                      {streak.streakFromDate} and {streak.streakToDate}.{' '}
+                      Your random challenge is available
                     </h4>
                   </Typography>
                 </div>
               </div>
             )}
 
-            {streak && streak.streakChallenge !== null ? (
+            {(streak && streak.streakChallenge !== null) ||
+            streakTrack.challengeAction === 'IGNORE' ||
+            streakTrack.challengeAction === 'ACCEPT' ? (
               streakTrack &&
               streakTrack.challengeAction !== 'NO_ACTION_PERFORM' ? (
                 <CardActions
@@ -385,14 +845,13 @@ const SundayChallenge = (props) => {
                           width: 130,
                           height: 25,
                         }}
-                        onClick={() => {
-                          acceptOrReject(
+                        onClick={() =>
+                          onjoinModal(
                             'ignore',
                             'DAY',
-                            streak ? streak.streakChallenge : '',
-                            props.eventId
-                          );
-                        }}
+                            streak ? streak.streakChallenge : ''
+                          )
+                        }
                       >
                         Ignore
                       </button>
@@ -441,21 +900,25 @@ const SundayChallenge = (props) => {
                 variant="body2"
                 color="text.secondary"
                 style={{
-                  fontSize: 12,
-                  wordSpacing: 3,
+                  display: 'flex',
+                  justifyContent: 'space-around',
+                  marginTop: -15,
                 }}
               >
-                <h4
+                <button
                   style={{
-                    textAlign: 'right',
-                    fontWeight: 'lighter',
-                    marginRight: 20,
-                    marginTop: -15,
+                    width: 130,
+                    height: 25,
+                    background: '#ffa726',
+                    float: 'right',
+                  }}
+                  className="is-success"
+                  onClick={() => {
+                    randomStreak('RANDOM', 'DAY', '21', props.eventId);
                   }}
                 >
-                  {' '}
-                  Challenge not available{' '}
-                </h4>
+                  Random challenge
+                </button>
               </Typography>
             )}
           </div>
@@ -480,7 +943,9 @@ const SundayChallenge = (props) => {
             {' '}
             <h2 style={{}}> Distance </h2>{' '}
           </div>
-          {distance && distance.kmchallenge !== null ? (
+          {(distance && distance.kmchallenge !== null) ||
+          distanceTrack.challengeAction === 'IGNORE' ||
+          distanceTrack.challengeAction === 'ACCEPT' ? (
             <CardContent>
               <div style={{display: 'flex', justifyContent: 'space-between'}}>
                 <div style={{width: '30%', marginLeft: -20}}>
@@ -521,43 +986,45 @@ const SundayChallenge = (props) => {
                       wordSpacing: 3,
                     }}
                   >
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      style={{marginLeft: 20, fontSize: 12, wordSpacing: 3}}
-                    >
-                      Your Previous Best Distance covered in a day was of{' '}
-                      <strong> {distance && distance.eventMaxKM} </strong>
-                      KMs.Achieved on
-                      <strong> {distance && distance.maxKMDate} </strong>
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      style={{
-                        marginLeft: 20,
-                        fontSize: 12,
-                        marginTop: 5,
-                        wordSpacing: 3,
-                      }}
-                    >
-                      {' '}
-                      Would you like to up the mark and accept a challenge for{' '}
-                      <strong> {distance && distance.kmchallenge} </strong>
-                      KMs?
-                      <p>
+                    <>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        style={{marginLeft: 20, fontSize: 12, wordSpacing: 3}}
+                      >
+                        Your Previous Best Distance covered in a day was of{' '}
+                        <strong> {distance && distance.eventMaxKM} </strong>
+                        KMs.Achieved on
+                        <strong> {distance && distance.maxKMDate} </strong>
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        style={{
+                          marginLeft: 20,
+                          fontSize: 12,
+                          marginTop: 5,
+                          wordSpacing: 3,
+                        }}
+                      >
                         {' '}
-                        <strong>
+                        Would you like to up the mark and accept a challenge for{' '}
+                        <strong> {distance && distance.kmchallenge} </strong>
+                        KMs?
+                        <p>
                           {' '}
-                          <span style={{color: 'red'}}>* </span>
-                          Target to be achieved on or before{' '}
                           <strong>
                             {' '}
-                            {distance && distance.targetedKmDate}.{' '}
-                          </strong>
-                        </strong>{' '}
-                      </p>
-                    </Typography>
+                            <span style={{color: 'red'}}>* </span>
+                            Target to be achieved on or before{' '}
+                            <strong>
+                              {' '}
+                              {distance && distance.targetedKmDate}.{' '}
+                            </strong>
+                          </strong>{' '}
+                        </p>
+                      </Typography>
+                    </>
                   </div>
                 ) : (distanceTrack &&
                     distanceTrack.challengeAction === 'IGNORE') ||
@@ -651,14 +1118,17 @@ const SundayChallenge = (props) => {
                 >
                   {' '}
                   <h4 style={{width: '80%', fontWeight: 'lighter'}}>
-                    Your Previous Best Distance covered in a day was of{' '}
-                    {distance.eventMaxKM} KMs. Achieved on {distance.maxKMDate}.{' '}
+                    Your random challenge is available
+                    {/* Your Previous Best Distance covered in a day was of{' '}
+                    {distance.eventMaxKM} KMs. Achieved on {distance.maxKMDate}.{' '} */}
                   </h4>
                 </Typography>{' '}
               </div>
             </div>
           )}
-          {distance && distance.kmchallenge !== null ? (
+          {(distance && distance.kmchallenge !== null) ||
+          distanceTrack.challengeAction === 'IGNORE' ||
+          distanceTrack.challengeAction === 'ACCEPT' ? (
             distanceTrack &&
             distanceTrack.challengeAction !== 'NO_ACTION_PERFORM' ? (
               <CardActions
@@ -692,14 +1162,21 @@ const SundayChallenge = (props) => {
                         width: 130,
                         height: 25,
                       }}
-                      onClick={() => {
-                        acceptOrReject(
+                      onClick={() =>
+                        onjoinModal(
                           'ignore',
                           'KM',
-                          distance ? distance.kmchallenge : '',
-                          props.eventId
-                        );
-                      }}
+                          distance ? distance.kmchallenge : ''
+                        )
+                      }
+                      // onClick={() => {
+                      //   acceptOrReject(
+                      //     'ignore',
+                      //     'KM',
+                      //     distance ? distance.kmchallenge : '',
+                      //     props.eventId
+                      //   );
+                      // }}
                     >
                       Ignore
                     </button>
@@ -736,21 +1213,25 @@ const SundayChallenge = (props) => {
               variant="body2"
               color="text.secondary"
               style={{
-                fontSize: 12,
-                wordSpacing: 3,
+                display: 'flex',
+                justifyContent: 'space-around',
+                marginTop: -15,
               }}
             >
-              <h4
+              <button
                 style={{
-                  textAlign: 'right',
-                  fontWeight: 'lighter',
-                  marginRight: 20,
-                  marginTop: -15,
+                  width: 130,
+                  height: 25,
+                  background: '#ffa726',
+                  float: 'right',
+                }}
+                className="is-success"
+                onClick={() => {
+                  randomkm('RANDOM', 'KM', '21', props.eventId);
                 }}
               >
-                {' '}
-                Challenge not available{' '}
-              </h4>
+                Random challenge
+              </button>
             </Typography>
           )}
         </Card>{' '}
@@ -774,7 +1255,9 @@ const SundayChallenge = (props) => {
             {' '}
             <h2 style={{}}> Average </h2>{' '}
           </div>
-          {average && average.weekAvgChallenge !== null ? (
+          {(average && average.weekAvgChallenge !== null) ||
+          averageTrack.challengeAction === 'IGNORE' ||
+          averageTrack.challengeAction === 'ACCEPT' ? (
             <CardContent>
               <div style={{display: 'flex', justifyContent: 'space-between'}}>
                 <div style={{width: '30%', marginLeft: -20}}>
@@ -889,7 +1372,10 @@ const SundayChallenge = (props) => {
                           WOW !! You have Succesfully achieved your target.
                         </div>
                       ) : averageTrack.avgWeekStatus === 'FAILED' ? (
-                        <div>OOPS! You have failed , Better luck next time</div>
+                        <div>
+                          Oops! Challenge is unachievable now. Better luck next
+                          time
+                        </div>
                       ) : (
                         <div style={{marginLeft: 20, fontSize: 12}}>
                           {' '}
@@ -950,15 +1436,15 @@ const SundayChallenge = (props) => {
                   {' '}
                   <h4 style={{width: '80%', fontWeight: 'lighter'}}>
                     {' '}
-                    Your Previous Best Weekly average was of{' '}
-                    {average.eventMaxWeekAverage} KMs/Week. Achieved from{' '}
-                    {average.weekAvgFromDate} to {average.weekAvgToDate}{' '}
+                    Your random challenge is available
                   </h4>
                 </Typography>
               </div>
             </div>
           )}
-          {average && average.weekAvgChallenge !== null ? (
+          {(average && average.weekAvgChallenge !== null) ||
+          averageTrack.challengeAction === 'IGNORE' ||
+          averageTrack.challengeAction === 'ACCEPT' ? (
             averageTrack &&
             averageTrack.challengeAction !== 'NO_ACTION_PERFORM' ? (
               <CardActions
@@ -992,14 +1478,21 @@ const SundayChallenge = (props) => {
                         width: 130,
                         height: 25,
                       }}
-                      onClick={() => {
-                        acceptOrReject(
+                      onClick={() =>
+                        onjoinModal(
                           'ignore',
                           'AVG',
-                          average ? average.weekAvgChallenge : '',
-                          props.eventId
-                        );
-                      }}
+                          average ? average.weekAvgChallenge : ''
+                        )
+                      }
+                      // onClick={() => {
+                      //   acceptOrReject(
+                      //     'ignore',
+                      //     'AVG',
+                      //     average ? average.weekAvgChallenge : '',
+                      //     props.eventId
+                      //   );
+                      // }}
                     >
                       Ignore
                     </button>{' '}
@@ -1024,10 +1517,6 @@ const SundayChallenge = (props) => {
                       }}
                     >
                       {' '}
-                      {/* <p style={{textAlign: 'right'}}>
-                        {' '}
-                        {averageTrack && averageTrack.avgWeekStatus}{' '}
-                      </p> */}
                       {averageTrack.avgWeekStatus !== 'COMPLETED' ? (
                         <progress
                           style={{width: '300px'}}
@@ -1056,21 +1545,25 @@ const SundayChallenge = (props) => {
               variant="body2"
               color="text.secondary"
               style={{
-                fontSize: 12,
-                wordSpacing: 3,
+                display: 'flex',
+                justifyContent: 'space-around',
+                marginTop: -15,
               }}
             >
-              <h4
+              <button
                 style={{
-                  textAlign: 'right',
-                  fontWeight: 'lighter',
-                  marginRight: 20,
-                  marginTop: -15,
+                  width: 130,
+                  height: 25,
+                  background: '#ffa726',
+                  float: 'right',
+                }}
+                className="is-success"
+                onClick={() => {
+                  randomAvg('RANDOM', 'AVG', '21', props.eventId);
                 }}
               >
-                {' '}
-                Challenge not available{' '}
-              </h4>
+                Random challenge
+              </button>
             </Typography>
           )}
         </Card>{' '}

@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {Img, WeekImg, kmImg, LeaderboardImg} from './streakImages';
 // import Image from "./WeekImages";
 import Card from '@material-ui/core/Card';
+import Box from '@material-ui/core/Box';
+import Paper from '@material-ui/core/Paper';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
@@ -12,7 +14,8 @@ import ReactTooltip from 'react-tooltip';
 
 const Imgshow = (props) => {
   const [colorevent, setcolorevent] = useState([]);
-  console.warn(props.event, 'props');
+  const [colorMiles, setcolorMiles] = useState([]);
+  console.warn(props.logo.MILESTONE, 'props');
   const getColorAchievements = () => {
     const URL = `${urlPrefix}v1.0/getUserChallengeAchivement?challengerZoneId=${props.event}`;
     return axios
@@ -37,14 +40,42 @@ const Imgshow = (props) => {
       });
   };
 
+  const getMilestones = () => {
+    const URL = `${urlPrefix}v1.0/getLeaderBoardAchievement?challengerZoneId=10`;
+    return axios
+      .get(URL, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          timeStamp: 'timestamp',
+          accept: '*/*',
+          'Access-Control-Allow-Origin': '*',
+          withCredentials: true,
+          'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
+          'Access-Control-Allow-Headers':
+            'accept, content-type, x-access-token, x-requested-with',
+        },
+      })
+      .then((res) => {
+        console.log(res); //
+        {
+          res.data.response.responseData
+            ? setcolorMiles(res.data.response.responseData)
+            : setcolorMiles([]);
+        }
+      });
+  };
+
+  console.log(colorMiles._50_M, 'hfhifeegf');
   useEffect(() => {
     getColorAchievements();
+    getMilestones();
   }, [props.event]);
 
   const [distance, setdistance] = useState(props.logo.DISTANCE);
   const [streak, setstreak] = useState(props.logo.STREAK);
 
   const [week, setweek] = useState(props.logo.AVERAGE);
+  const [mileStone, setmileStone] = useState(props.logo.MILESTONE);
 
   //WEEK FUNCTION
 
@@ -553,21 +584,329 @@ const Imgshow = (props) => {
       </div>
       <div style={{display: 'flex', flexDirection: 'column'}}>
         <h4> Milestones : </h4>
+        <div>
+          {/* {LeaderboardImg.map((elem) => {
+            return ( */}
+          {/* <> */}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            {/* <ReactTooltip /> */}
+            <Box
+              style={{
+                width: 130,
+                height: 130,
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
+              <Paper elevation={0}>
+                <img
+                  src={
+                    colorMiles._50_M?.achievementIcon
+                      ? colorMiles._50_M?.achievementIcon
+                      : mileStone._50_M
+                  }
+                  style={{width: 130, height: 130}}
+                />{' '}
+              </Paper>{' '}
+            </Box>
+            <Box
+              style={{
+                width: 130,
+                height: 130,
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
+              <Paper elevation={0}>
+                <img
+                  src={
+                    colorMiles._100_M?.achievementIcon
+                      ? colorMiles._100_M?.achievementIcon
+                      : mileStone._100_M
+                  }
+                  style={{width: 130, height: 130}}
+                />{' '}
+              </Paper>
+            </Box>
+            <Box
+              style={{
+                width: 130,
+                height: 130,
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
+              <Paper elevation={0}>
+                <img
+                  src={
+                    colorMiles._200_M?.achievementIcon
+                      ? colorMiles._200_M?.achievementIcon
+                      : mileStone._200_M
+                  }
+                  style={{width: 130, height: 130}}
+                />{' '}
+              </Paper>
+            </Box>
+            <Box
+              style={{
+                width: 130,
+                height: 130,
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
+              <Paper elevation={0}>
+                <img
+                  src={
+                    colorMiles._300_M?.achievementIcon
+                      ? colorMiles._300_M?.achievementIcon
+                      : mileStone._300_M
+                  }
+                  style={{width: 130, height: 130}}
+                />{' '}
+              </Paper>
+            </Box>
+            <Box
+              style={{
+                width: 130,
+                height: 130,
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
+              <Paper elevation={0}>
+                <img
+                  src={
+                    colorMiles._400_M?.achievementIcon
+                      ? colorMiles._400_M?.achievementIcon
+                      : mileStone._400_M
+                  }
+                  style={{width: 130, height: 130, marginLeft: 20}}
+                />{' '}
+              </Paper>
+            </Box>
+            <Box
+              style={{
+                width: 130,
+                height: 130,
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
+              <Paper elevation={0}>
+                <img
+                  src={
+                    colorMiles._500_M?.achievementIcon
+                      ? colorMiles._500_M?.achievementIcon
+                      : mileStone._500_M
+                  }
+                  style={{width: 130, height: 130, marginLeft: 30}}
+                />{' '}
+              </Paper>
+            </Box>
+            .
+            <Box
+              style={{
+                width: 130,
+                height: 130,
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
+              <Paper elevation={0}>
+                <img
+                  src={
+                    colorMiles._600_M?.achievementIcon
+                      ? colorMiles._600_M?.achievementIcon
+                      : mileStone._600_M
+                  }
+                  style={{width: 130, height: 130}}
+                />{' '}
+              </Paper>
+            </Box>
+          </div>
+          {/* </>
+           );
+         })} */}
+        </div>
+
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-between',
           }}
         >
-          {LeaderboardImg.map((elem) => {
-            return (
-              <>
-                <div>
-                  <img src={elem.image} style={{width: 130, height: 130}} />{' '}
-                </div>
-              </>
-            );
-          })}
+          <Box
+            style={{
+              width: 130,
+              height: 130,
+              display: 'flex',
+              flexDirection: 'column',
+              textAlign: 'center',
+              fontSize: 12,
+            }}
+          >
+            {' '}
+            <Paper elevation={2} style={{width: 130, minHeight: 100}}>
+              {colorMiles._50_M?.date?.map((item, index) => {
+                console.log(item, 'item');
+                return (
+                  <>
+                    {' '}
+                    <div> {item}</div>
+                  </>
+                );
+              })}{' '}
+            </Paper>{' '}
+          </Box>
+
+          <Box
+            style={{
+              width: 130,
+              height: 130,
+              display: 'flex',
+              flexDirection: 'column',
+              textAlign: 'center',
+              fontSize: 12,
+            }}
+          >
+            {' '}
+            <Paper elevation={2} style={{width: 130, minHeight: 100}}>
+              {colorMiles._100_M?.date?.map((item, index) => {
+                console.log(item, 'item');
+                return (
+                  <>
+                    {' '}
+                    <div> {item}</div>
+                  </>
+                );
+              })}{' '}
+            </Paper>{' '}
+          </Box>
+          <Box
+            style={{
+              width: 130,
+              height: 130,
+              display: 'flex',
+              flexDirection: 'column',
+              textAlign: 'center',
+              fontSize: 12,
+            }}
+          >
+            {' '}
+            <Paper elevation={2} style={{width: 130, minHeight: 100}}>
+              {colorMiles._200_M?.date?.map((item, index) => {
+                console.log(item, 'item');
+                return (
+                  <>
+                    {' '}
+                    <div> {item}</div>
+                  </>
+                );
+              })}{' '}
+            </Paper>{' '}
+          </Box>
+
+          <Box
+            style={{
+              width: 130,
+              height: 130,
+              display: 'flex',
+              flexDirection: 'column',
+              textAlign: 'center',
+              fontSize: 12,
+            }}
+          >
+            {' '}
+            <Paper elevation={2} style={{width: 130, minHeight: 100}}>
+              {colorMiles._300_M?.date?.map((item, index) => {
+                console.log(item, 'item');
+                return (
+                  <>
+                    {' '}
+                    <div> {item}</div>
+                  </>
+                );
+              })}{' '}
+            </Paper>{' '}
+          </Box>
+
+          <Box
+            style={{
+              width: 130,
+              height: 130,
+              display: 'flex',
+              flexDirection: 'column',
+              textAlign: 'center',
+              fontSize: 12,
+            }}
+          >
+            {' '}
+            <Paper elevation={2} style={{width: 130, minHeight: 100}}>
+              {colorMiles._400_M?.date?.map((item, index) => {
+                console.log(item, 'item');
+                return (
+                  <>
+                    {' '}
+                    <div> {item}</div>
+                  </>
+                );
+              })}{' '}
+            </Paper>{' '}
+          </Box>
+
+          <Box
+            style={{
+              width: 130,
+              height: 130,
+              display: 'flex',
+              flexDirection: 'column',
+              textAlign: 'center',
+              fontSize: 12,
+            }}
+          >
+            {' '}
+            <Paper elevation={2} style={{width: 130, minHeight: 100}}>
+              {colorMiles._500_M?.date?.map((item, index) => {
+                console.log(item, 'item');
+                return (
+                  <>
+                    {' '}
+                    <div> {item}</div>
+                  </>
+                );
+              })}{' '}
+            </Paper>{' '}
+          </Box>
+
+          <Box
+            style={{
+              width: 130,
+              height: 130,
+              display: 'flex',
+              flexDirection: 'column',
+              textAlign: 'center',
+              fontSize: 12,
+            }}
+          >
+            {' '}
+            <Paper elevation={2} style={{width: 130, minHeight: 100}}>
+              {colorMiles._600_M?.date?.map((item, index) => {
+                console.log(item, 'item');
+                return (
+                  <>
+                    {' '}
+                    <div> {item}</div>
+                  </>
+                );
+              })}{' '}
+            </Paper>{' '}
+          </Box>
         </div>
       </div>
     </>

@@ -1003,7 +1003,7 @@ const Dashboard = () => {
             };
           });
         });
-      // console.log(dashboardState.selectedChallenge, 'event');
+      console.log(dashboardState.selectedAction, 'event');
       await getEventGalleryData(eventObj.id).then((galleryResponse) => {
         if (galleryResponse.data.response.responseMessage === 'SUCCESS') {
           setDashboardState((prevState) => {

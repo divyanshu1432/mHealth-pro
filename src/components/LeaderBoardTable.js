@@ -142,9 +142,15 @@ const headCells = [
     numeric: false,
     disablePadding: true,
   },
+  // {
+  //   label: 'Gender',
+  //   id: 'gender',
+  //   numeric: false,
+  //   disablePadding: true,
+  // },
   {
-    label: 'Gender',
-    id: 'gender',
+    label: 'Achievement',
+    id: 'valueTillDate',
     numeric: false,
     disablePadding: true,
   },
@@ -166,12 +172,7 @@ const headCells = [
     numeric: false,
     disablePadding: true,
   },
-  {
-    label: 'Achievement',
-    id: 'valueTillDate',
-    numeric: false,
-    disablePadding: true,
-  },
+
   {
     label: 'Km',
     id: 'lastDistanceCovered',
@@ -186,7 +187,7 @@ const headCells = [
   //   disablePadding: true
   // },
   {
-    label: 'T. Km',
+    label: 'Total Km',
     id: 'value',
     numeric: true,
     disablePadding: true,
@@ -204,7 +205,7 @@ const headCells = [
     disablePadding: true,
   },
   {
-    label: 'Days',
+    label: 'Active Days',
     id: 'totalParticipationDays',
     numeric: true,
     disablePadding: true,
@@ -239,7 +240,7 @@ function EnhancedTableHead(props) {
         )}
         {headCells.map((headCell) => (
           <TableCell
-            style={{maxWidth: 50}}
+            style={{maxWidth: 80}}
             key={headCell.id}
             align="center"
             padding={headCell.disablePadding ? 'none' : 'default'}
@@ -881,7 +882,6 @@ export default function EnhancedTable({
                               {row.rank ? row.rank : '-'}
                             </div>
                           </TableCell>
-
                           <TableCell align="center">
                             <div
                               style={{
@@ -933,11 +933,29 @@ export default function EnhancedTable({
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell align="center">
+                          {/* <TableCell align="center">
                             <div style={{fontSize: 12}}>
                               {row.gender ? row.gender : '-'}
                             </div>
-                          </TableCell>
+                          </TableCell> */}
+                          <TableCell align="center">
+                            <div style={{fontSize: 12}}>
+                              {row.achievementIcon ? (
+                                <img
+                                  style={{
+                                    width: 35,
+                                    height: 35,
+                                    borderRadius: '100%',
+                                  }}
+                                  src={
+                                    row.achievementIcon && row.achievementIcon
+                                  }
+                                />
+                              ) : (
+                                ''
+                              )}
+                            </div>
+                          </TableCell>{' '}
                           <TableCell align="center">
                             <div style={{fontSize: 12}}>
                               {row.city ? row.city : '-'}
@@ -980,27 +998,8 @@ export default function EnhancedTable({
                             </div>
                           </TableCell>
                           <TableCell align="center">
-                            <div style={{fontSize: 12, width: 70}}>
-                              {row.valueTillDate ? row.valueTillDate : '-'}
-                            </div>
-                          </TableCell>
-
-                          <TableCell align="center">
                             <div style={{fontSize: 12}}>
-                              {row.achievementIcon ? (
-                                <img
-                                  style={{
-                                    width: 35,
-                                    height: 35,
-                                    borderRadius: '100%',
-                                  }}
-                                  src={
-                                    row.achievementIcon && row.achievementIcon
-                                  }
-                                />
-                              ) : (
-                                ''
-                              )}
+                              {row.valueTillDate ? row.valueTillDate : '-'}
                             </div>
                           </TableCell>
                           <TableCell align="center">
@@ -1016,41 +1015,46 @@ export default function EnhancedTable({
                                 ? row.lastDistanceCovered.toFixed(2)
                                 : '0'}
                               {row.verificationImage ? (
-                                <img
-                                  title="Verified"
-                                  src={row.verificationImage}
-                                  style={{
-                                    marginTop: -7,
-                                    height: 30,
-                                    width: 30,
-                                    marginLeft: 10,
-                                  }}
-                                />
+                                <Tooltip
+                                  title="verified"
+                                  aria-label={row.toolTipMessage}
+                                  placement="top"
+                                >
+                                  <img
+                                    // title="Verified"
+                                    src={row.verificationImage}
+                                    style={{
+                                      marginTop: -7,
+                                      height: 30,
+                                      width: 30,
+                                      marginLeft: 10,
+                                    }}
+                                  />
+                                </Tooltip>
                               ) : (
                                 ''
                               )}
                             </div>
                           </TableCell>
-
                           <TableCell align="center">
                             <div style={{fontSize: 12}}>
                               {row.value ? row.value.toFixed(2) : '0'}
                             </div>
                           </TableCell>
                           <TableCell align="center">
-                            <div style={{fontSize: 12, width: 20}}>
+                            <div style={{fontSize: 12}}>
                               {row.averageDistanceCovered
                                 ? row.averageDistanceCovered.toFixed(2)
                                 : '0'}
                             </div>
                           </TableCell>
                           <TableCell align="center">
-                            <div style={{fontSize: 12, width: 30}}>
+                            <div style={{fontSize: 12}}>
                               {row.leadBy ? row.leadBy : ''}
                             </div>
                           </TableCell>
-                          <TableCell align="center" style={{width: 30}}>
-                            <div style={{fontSize: 12, maxWidth: '50px'}}>
+                          <TableCell align="center" style={{}}>
+                            <div style={{fontSize: 12}}>
                               {row.totalParticipationDays
                                 ? row.totalParticipationDays
                                 : '0'}

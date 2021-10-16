@@ -41,7 +41,7 @@ const Imgshow = (props) => {
   };
 
   const getMilestones = () => {
-    const URL = `${urlPrefix}v1.0/getLeaderBoardAchievement?challengerZoneId=10`;
+    const URL = `${urlPrefix}v1.0/getLeaderBoardAchievement?challengerZoneId=${props.event}`;
     return axios
       .get(URL, {
         headers: {
@@ -65,20 +65,37 @@ const Imgshow = (props) => {
       });
   };
 
-  console.log(colorMiles._50_M, 'hfhifeegf');
+  // console.log(colorMiles._50_M, 'hfhifeegf');
   useEffect(() => {
     getColorAchievements();
     getMilestones();
   }, [props.event]);
 
-  const [distance, setdistance] = useState(props.logo.DISTANCE);
-  const [streak, setstreak] = useState(props.logo.STREAK);
+  const [distance, setdistance] = useState({});
+  const [streak, setstreak] = useState({});
 
-  const [week, setweek] = useState(props.logo.AVERAGE);
-  const [mileStone, setmileStone] = useState(props.logo.MILESTONE);
+  const [week, setweek] = useState({});
+  const [mileStone, setmileStone] = useState({});
 
+  const set = () => {
+    {
+      props.logo.DISTANCE && setdistance(props.logo.DISTANCE);
+    }
+    {
+      props.logo.STREAK && setstreak(props.logo.STREAK);
+    }
+    {
+      props.logo.AVERAGE && setweek(props.logo.AVERAGE);
+    }
+    {
+      props.logo.MILESTONE && setmileStone(props.logo.MILESTONE);
+    }
+  };
+  useEffect(() => {
+    set();
+  });
   //WEEK FUNCTION
-
+  console.log(props.logo.STREAK, 'streak');
   const _1_A = colorevent.filter(function (hero) {
     const x = hero.key == '_1_A';
     return x;
@@ -744,7 +761,7 @@ const Imgshow = (props) => {
           <Box
             style={{
               width: 130,
-              height: 130,
+              paddingBottom: 10,
               display: 'flex',
               flexDirection: 'column',
               textAlign: 'center',
@@ -752,7 +769,7 @@ const Imgshow = (props) => {
             }}
           >
             {' '}
-            <Paper elevation={2} style={{width: 130, minHeight: 100}}>
+            <Paper elevation={2} style={{width: 130}}>
               {colorMiles._50_M?.date?.map((item, index) => {
                 console.log(item, 'item');
                 return (
@@ -768,7 +785,7 @@ const Imgshow = (props) => {
           <Box
             style={{
               width: 130,
-              height: 130,
+              paddingBottom: 10,
               display: 'flex',
               flexDirection: 'column',
               textAlign: 'center',
@@ -776,7 +793,7 @@ const Imgshow = (props) => {
             }}
           >
             {' '}
-            <Paper elevation={2} style={{width: 130, minHeight: 100}}>
+            <Paper elevation={2} style={{width: 130}}>
               {colorMiles._100_M?.date?.map((item, index) => {
                 console.log(item, 'item');
                 return (
@@ -791,7 +808,7 @@ const Imgshow = (props) => {
           <Box
             style={{
               width: 130,
-              height: 130,
+              paddingBottom: 10,
               display: 'flex',
               flexDirection: 'column',
               textAlign: 'center',
@@ -799,7 +816,7 @@ const Imgshow = (props) => {
             }}
           >
             {' '}
-            <Paper elevation={2} style={{width: 130, minHeight: 100}}>
+            <Paper elevation={2} style={{width: 130}}>
               {colorMiles._200_M?.date?.map((item, index) => {
                 console.log(item, 'item');
                 return (
@@ -815,7 +832,7 @@ const Imgshow = (props) => {
           <Box
             style={{
               width: 130,
-              height: 130,
+              paddingBottom: 10,
               display: 'flex',
               flexDirection: 'column',
               textAlign: 'center',
@@ -823,7 +840,7 @@ const Imgshow = (props) => {
             }}
           >
             {' '}
-            <Paper elevation={2} style={{width: 130, minHeight: 100}}>
+            <Paper elevation={2} style={{width: 130}}>
               {colorMiles._300_M?.date?.map((item, index) => {
                 console.log(item, 'item');
                 return (
@@ -839,7 +856,7 @@ const Imgshow = (props) => {
           <Box
             style={{
               width: 130,
-              height: 130,
+              paddingBottom: 10,
               display: 'flex',
               flexDirection: 'column',
               textAlign: 'center',
@@ -847,7 +864,7 @@ const Imgshow = (props) => {
             }}
           >
             {' '}
-            <Paper elevation={2} style={{width: 130, minHeight: 100}}>
+            <Paper elevation={2} style={{width: 130}}>
               {colorMiles._400_M?.date?.map((item, index) => {
                 console.log(item, 'item');
                 return (
@@ -863,7 +880,7 @@ const Imgshow = (props) => {
           <Box
             style={{
               width: 130,
-              height: 130,
+              paddingBottom: 10,
               display: 'flex',
               flexDirection: 'column',
               textAlign: 'center',
@@ -871,7 +888,7 @@ const Imgshow = (props) => {
             }}
           >
             {' '}
-            <Paper elevation={2} style={{width: 130, minHeight: 100}}>
+            <Paper elevation={2} style={{width: 1300}}>
               {colorMiles._500_M?.date?.map((item, index) => {
                 console.log(item, 'item');
                 return (
@@ -887,7 +904,7 @@ const Imgshow = (props) => {
           <Box
             style={{
               width: 130,
-              height: 130,
+              paddingBottom: 10,
               display: 'flex',
               flexDirection: 'column',
               textAlign: 'center',
@@ -895,7 +912,7 @@ const Imgshow = (props) => {
             }}
           >
             {' '}
-            <Paper elevation={2} style={{width: 130, minHeight: 100}}>
+            <Paper elevation={2} style={{width: 130}}>
               {colorMiles._600_M?.date?.map((item, index) => {
                 console.log(item, 'item');
                 return (

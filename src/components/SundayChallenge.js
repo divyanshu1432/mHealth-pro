@@ -602,7 +602,7 @@ const SundayChallenge = (props) => {
                 marginTop: '-10px',
                 display: 'flex',
                 justifyContent: 'center',
-                background: '#636e72',
+                background: '#95a5a6',
                 height: 45,
               }}
             >
@@ -950,7 +950,7 @@ const SundayChallenge = (props) => {
               marginTop: '-10px',
               display: 'flex',
               justifyContent: 'center',
-              background: '#636e72',
+              background: '#95a5a6',
               height: 45,
             }}
           >
@@ -1273,7 +1273,7 @@ const SundayChallenge = (props) => {
               marginTop: '-10px',
               display: 'flex',
               justifyContent: 'center',
-              background: '#636e72',
+              background: '#95a5a6',
               height: 45,
             }}
           >

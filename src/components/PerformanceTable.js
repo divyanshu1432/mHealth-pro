@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {lighten, makeStyles, useTheme} from '@material-ui/core/styles';
+import Chart from 'react-apexcharts';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -9,6 +10,9 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import IconButton from '@material-ui/core/IconButton';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FirstPageIcon from '@material-ui/icons/FirstPage';
@@ -17,9 +21,12 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import {APP} from '../utils/appConfig';
 import AddPastDetailForm from './AddPastDetailForm';
+import {urlPrefix, secretToken} from '../services/apicollection';
+import axios from 'axios';
 import {
   getDataCurrentSource,
   syncGFitAndStrava,
+  getChallengesByDate,
 } from '../services/challengeApi';
 import {AlertTriangle} from 'react-feather';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -176,22 +183,22 @@ const useStyles1 = makeStyles((theme) => ({
 function TablePaginationActions(props) {
   const classes = useStyles1();
   const theme = useTheme();
-  const {count, page, rowsPerPage, onPageChange} = props;
+  const {count, page, rowsPerPage, onChangePage} = props;
 
   const handleFirstPageButtonClick = (event) => {
-    onPageChange(event, 0);
+    onChangePage(event, 0);
   };
 
   const handleBackButtonClick = (event) => {
-    onPageChange(event, page - 1);
+    onChangePage(event, page - 1);
   };
 
   const handleNextButtonClick = (event) => {
-    onPageChange(event, page + 1);
+    onChangePage(event, page + 1);
   };
 
   const handleLastPageButtonClick = (event) => {
-    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+    onChangePage(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
   };
 
   return (
@@ -277,7 +284,54 @@ export default function PerformanceTable({
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [selectedDate, setSelectedDate] = useState('');
   const [displayModal, setDisplayModal] = useState(false);
+  const [weekMonth, setWeekMonth] = useState();
+  const [radioValue, setRadioValue] = useState('Daily');
+  console.log(radioValue);
 
+  const [options, setOptions] = useState();
+  const [series, setSeries] = useState();
+  const handle = (val) => {
+    const startdate = [];
+    const weeksum = [];
+    const adminurl = `${urlPrefix}v1.0/getWeekWiseLeaderBoardData?challengerZoneId=${eventId}&value=${val}`;
+    console.log(adminurl);
+    return axios
+      .get(adminurl, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          timeStamp: 'timestamp',
+          accept: '*/*',
+          'Access-Control-Allow-Origin': '*',
+          withCredentials: true,
+          'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
+          'Access-Control-Allow-Headers':
+            'accept, content-type, x-access-token, x-requested-with',
+        },
+      })
+      .then((res) => {
+        {
+          res.data.response.responseData.map((e1) => {
+            startdate.push(e1.weekStartDate);
+            weeksum.push(e1.weekSum);
+          });
+          console.log(startdate, weeksum);
+          setOptions(startdate);
+          setSeries(weeksum);
+
+          setRadioValue(val);
+          res.data.response.responseData.sort(function (a, b) {
+            return new Date(b.weekStartDate) - new Date(a.weekStartDate);
+          })
+            ? setWeekMonth(res.data.response.responseData)
+            : message.error(res.data.response.responseMessage);
+        }
+      });
+  };
+  useEffect(() => {
+    // getweekmonthlist();
+    // handleChange1();
+    handle();
+  }, []);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -299,15 +353,35 @@ export default function PerformanceTable({
   const [eventIDForSync, setEventIDForSync] = useState([]);
   useEffect(() => {
     setPage(0);
-    setOrder('asc');
+    setOrder('dsc');
     setOrderBy('');
+
     setRowsPerPage(50);
   }, [data]);
-
+  const [series1, setSeries1] = useState();
+  const [options1, setOptions1] = useState();
+  const valuestartdate = [];
+  const valuevalue = [];
   useEffect(() => {
     if (eventId) {
+      getChallengesByDate(eventId).then((res) => {
+        console.log(
+          res.data.response.responseData.challengerWiseLeaderBoard[0]
+            .dateWiseBoard
+        );
+        res.data.response.responseData.challengerWiseLeaderBoard[0].dateWiseBoard.map(
+          (e2) => {
+            valuestartdate.push(e2.valueTillDate);
+            valuevalue.push(e2.value);
+          }
+        );
+        setOptions1(valuestartdate);
+        setSeries1(valuevalue);
+        console.log(valuestartdate, valuevalue);
+      });
       getDataCurrentSource(eventId)
         .then((res) => {
+          console.log(res);
           if (
             res.data.response.responseCode === 0 &&
             (res.data.response.responseData.datasource === 'WHATSAPP' ||
@@ -332,100 +406,166 @@ export default function PerformanceTable({
     }
   }, [eventId]);
 
+  // }
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <div style={{fontSize: 14, fontWeight: 700, padding: 8}}>
-          Date Wise Performance
-        </div>
-
         <TableContainer>
           <div
             style={{
               display: 'flex',
-              alignItems: 'center',
+              // alignItems: 'center',
+              // float:'left',
               justifyContent: 'flex-end',
             }}
           >
-            {challengeSwitch !== 'old' && dataButtonType === 'WHATSAPP_WEB' && (
-              <button
-                className="add-data-button"
-                style={{marginLeft: 10}}
-                onClick={() => {
-                  var today = new Date();
-                  var dd = String(today.getDate()).padStart(2, '0');
-                  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-                  var yyyy = today.getFullYear();
-
-                  setSelectedDate(yyyy + '-' + mm + '-' + dd);
-                  setDisplayModal(true);
+            <div style={{width: '50%', display: 'flex'}}>
+              <span style={{fontSize: 14, fontWeight: 700, padding: 8}}>
+                Data View:
+              </span>
+              <span
+                style={{
+                  marginLeft: '10px',
+                  marginTop: '10px',
                 }}
               >
-                Add Today's Data
-              </button>
-            )}
-            {challengeSwitch !== 'old' &&
-              dataButtonType === 'STRAVA_GOOGLE_FIT' && (
-                <button
-                  className="add-data-button"
-                  style={{marginLeft: 10}}
-                  onClick={() => {
-                    window.message = Message;
-                    /** api to sync**/
-                    setCheckingData(true);
-                    if (eventIDForSync.length === 0) {
-                      syncGFitAndStrava('check', eventId)
-                        .then((res) => {
-                          if (res.data.response.responseCode === 0) {
-                            setEventIDForSync(
-                              res.data.response.responseData[0]
-                            );
-                          } else {
-                            message.success('No Data to sync');
-                            setEventIDForSync([]);
-                          }
-                          setCheckingData(false);
-                        })
-                        .catch((err) => {
-                          setEventIDForSync([]);
-                          setCheckingData(false);
-                        });
-                    }
-                    if (eventIDForSync.length > 0) {
-                      syncGFitAndStrava('fix', eventId)
-                        .then((res) => {
-                          if (res.data.response.responseCode === 0) {
-                            message.success('Synced');
-                            setEventIDForSync([]);
-                            handlePerformanceClick();
-                          }
-                          setCheckingData(false);
-                        })
-                        .catch((err) => {
-                          setCheckingData(false);
-                        });
-                    }
-                  }}
-                >
-                  {isCheckingData
-                    ? 'In Progress..'
-                    : eventIDForSync.length > 0
-                    ? 'Sync Data'
-                    : 'Validate'}
-                </button>
-              )}
-            <TablePagination
-              rowsPerPageOptions={[25, 50, 75, 100]}
-              component="div"
-              count={data.data.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onChangePage={handleChangePage}
-              onChangeRowsPerPage={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-            />
-          </div>
+                <div className="main" style={{display: 'flex'}}>
+                  <div className="first_div">
+                    <input
+                      type="radio"
+                      defaultChecked
+                      id="daily"
+                      name="radiobtn"
+                      // checked={"true"}
+                      // onChange={() => getChallengesByDate(eventId)}
+                      onChange={() => handle('Daily')}
+                    />
+                    <label for="Daily"> Daily </label>
+                  </div>
 
+                  <div className="mid_div">
+                    <input
+                      type="radio"
+                      id="Week"
+                      value={radioValue}
+                      name="radiobtn"
+                      onChange={() => handle('Week')}
+                    />
+                    <label for="Week"> Weekly </label>
+                  </div>
+
+                  <div className="last_div">
+                    <input
+                      type="radio"
+                      id="month"
+                      value={radioValue}
+                      name="radiobtn"
+                      onChange={() => handle('Month')}
+                    />
+                    <label for="Month"> Monthly </label>
+                  </div>
+                </div>
+              </span>
+            </div>
+            <div style={{width: '50%', display: 'flex'}}>
+              <div style={{width: '30%'}}>
+                {challengeSwitch !== 'old' && (
+                  <button
+                    className="add-data-button"
+                    style={{marginLeft: 10, marginTop: 10, fontSize: 12}}
+                    onClick={() => {
+                      var today = new Date();
+                      var dd = String(today.getDate()).padStart(2, '0');
+                      var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                      var yyyy = today.getFullYear();
+
+                      setSelectedDate(yyyy + '-' + mm + '-' + dd);
+                      setDisplayModal(true);
+                    }}
+                  >
+                    Add Today's Data
+                  </button>
+                )}
+
+                {challengeSwitch !== 'old' &&
+                  dataButtonType === 'WHATSAPP_WEB' &&
+                  dataButtonType === 'STRAVA_GOOGLE_FIT' && (
+                    <button
+                      className="add-data-button"
+                      style={{marginLeft: 10}}
+                      onClick={() => {
+                        window.message = Message;
+                        /** api to sync**/
+                        setCheckingData(true);
+                        if (eventIDForSync.length === 0) {
+                          syncGFitAndStrava('check', eventId)
+                            .then((res) => {
+                              if (res.data.response.responseCode === 0) {
+                                setEventIDForSync(
+                                  res.data.response.responseData[0]
+                                );
+                              } else {
+                                message.success('No Data to sync');
+                                setEventIDForSync([]);
+                              }
+                              setCheckingData(false);
+                            })
+                            .catch((err) => {
+                              setEventIDForSync([]);
+                              setCheckingData(false);
+                            });
+                        }
+                        if (eventIDForSync.length > 0) {
+                          syncGFitAndStrava('fix', eventId)
+                            .then((res) => {
+                              if (res.data.response.responseCode === 0) {
+                                message.success('Synced');
+                                setEventIDForSync([]);
+                                handlePerformanceClick();
+                              }
+                              setCheckingData(false);
+                            })
+                            .catch((err) => {
+                              setCheckingData(false);
+                            });
+                        }
+                      }}
+                    >
+                      {isCheckingData
+                        ? 'In Progress..'
+                        : eventIDForSync.length > 0
+                        ? 'Sync Data'
+                        : 'Validate'}
+                    </button>
+                  )}
+              </div>
+              <div style={{width: '70%'}}>
+                {(radioValue === 'Week') | (radioValue === 'Month') ? (
+                  <TablePagination
+                    rowsPerPageOptions={[25, 50, 75, 100]}
+                    component="div"
+                    count={weekMonth.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onChangePage={handleChangePage}
+                    onChangeRowsPerPage={handleChangeRowsPerPage}
+                    ActionsComponent={TablePaginationActions}
+                  />
+                ) : (
+                  <TablePagination
+                    rowsPerPageOptions={[25, 50, 75, 100]}
+                    component="div"
+                    count={data.data.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onChangePage={handleChangePage}
+                    onChangeRowsPerPage={handleChangeRowsPerPage}
+                    ActionsComponent={TablePaginationActions}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
@@ -440,21 +580,9 @@ export default function PerformanceTable({
             />
 
             <TableBody>
-              {data.loading ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={10}
-                    style={{
-                      position: 'relative',
-                      height: 200,
-                    }}
-                  >
-                    <FacebookCircularProgress />
-                  </TableCell>
-                </TableRow>
-              ) : data.data.length > 0 ? (
+              {(radioValue === 'Daily') | (radioValue === undefined) ? (
                 <>
-                  {stableSort(data.data, getComparator(order, orderBy))
+                  {stableSort(data.data, getComparator(orderBy, order))
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {
                       return (
@@ -502,10 +630,9 @@ export default function PerformanceTable({
                           </TableCell>
                           <TableCell align="center">
                             <div style={{fontSize: 12}}>
-                              {challengeSwitch !== 'old' &&
-                                row.value == 0 &&
+                              {row.value == 0 &&
                                 row.dataSource == 'WHATSAPP' &&
-                                dataButtonType === 'WHATSAPP_WEB' && (
+                                challengeSwitch !== 'old' && (
                                   <button
                                     className="add-data-button"
                                     onClick={() => {
@@ -545,6 +672,194 @@ export default function PerformanceTable({
                       );
                     })}
                 </>
+              ) : radioValue === 'Week' ? (
+                <>
+                  {stableSort(weekMonth, getComparator(order, orderBy))
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => {
+                      // console.log(row);
+                      return (
+                        <TableRow
+                          hover
+                          tabIndex={-1}
+                          key={row.userId + '' + index}
+                          className="performace-table-row"
+                        >
+                          <TableCell align="center">
+                            <div style={{fontSize: 12}}>{index + 1}</div>
+                          </TableCell>
+                          <TableCell align="center">
+                            <div style={{fontSize: 12}}>
+                              {row.weekStartDate}
+                            </div>
+                          </TableCell>
+
+                          <TableCell align="center">
+                            <div
+                              style={{
+                                fontSize: 12,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              {row.weekSum ? row.weekSum : 0}
+                            </div>
+                          </TableCell>
+                          <TableCell align="center">
+                            <div style={{fontSize: 12}}>
+                              <img
+                                src={
+                                  row.dataSource
+                                    ? APP.dataSourceLogo[row.dataSource]
+                                    : 'https://walkathon21.s3.ap-south-1.amazonaws.com/logo/NotSet.svg'
+                                }
+                                style={{
+                                  width: 30,
+                                  height: 30,
+                                }}
+                              />
+                            </div>
+                          </TableCell>
+                          <TableCell align="center">
+                            {/* <div style={{fontSize: 12}}>
+                              {challengeSwitch !== 'old' &&
+                                row.value == 0 &&
+                                row.dataSource == 'WHATSAPP' &&
+                                dataButtonType === 'WHATSAPP_WEB' && (
+                                  <button
+                                    className="add-data-button"
+                                    onClick={() => {
+                                      setSelectedDate(row.valueTillDate);
+                                      setDisplayModal(true);
+                                    }}
+                                  >
+                                    Add Data
+                                  </button>
+                                )}
+                              {challengeSwitch !== 'old' &&
+                                dataButtonType === 'STRAVA_GOOGLE_FIT' &&
+                                eventIDForSync.includes(row.valueTillDate) && (
+                                  <Tooltip title="Click on Sync button to sync the data">
+                                    <div
+                                      style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                      }}
+                                    >
+                                      <AlertTriangle
+                                        size={14}
+                                        style={{
+                                          marginLeft: '2px',
+                                          marginRight: '2px',
+                                          color: 'red',
+                                        }}
+                                      />
+                                      Sync Data
+                                    </div>
+                                  </Tooltip>
+                                )}
+                            </div> */}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                </>
+              ) : radioValue === 'Month' ? (
+                <>
+                  {stableSort(weekMonth, getComparator(order, orderBy))
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => {
+                      // console.log(row);
+                      return (
+                        <TableRow
+                          hover
+                          tabIndex={-1}
+                          key={row.userId + '' + index}
+                          className="performace-table-row"
+                        >
+                          <TableCell align="center">
+                            <div style={{fontSize: 12}}>{index + 1}</div>
+                          </TableCell>
+                          <TableCell align="center">
+                            <div style={{fontSize: 12}}>
+                              {row.weekStartDate}
+                            </div>
+                          </TableCell>
+
+                          <TableCell align="center">
+                            <div
+                              style={{
+                                fontSize: 12,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              {row.weekSum ? row.weekSum : 0}
+                            </div>
+                          </TableCell>
+                          <TableCell align="center">
+                            <div style={{fontSize: 12}}>
+                              <img
+                                src={
+                                  row.dataSource
+                                    ? APP.dataSourceLogo[row.dataSource]
+                                    : 'https://walkathon21.s3.ap-south-1.amazonaws.com/logo/NotSet.svg'
+                                }
+                                style={{
+                                  width: 30,
+                                  height: 30,
+                                }}
+                              />
+                            </div>
+                          </TableCell>
+                          <TableCell align="center">
+                            {/* <div style={{fontSize: 12}}>
+                              {
+                                row.weekSum === 0 &&
+                                row.dataSource == 'WHATSAPP' &&
+                                dataButtonType === 'WHATSAPP_WEB' && (
+                                  <button
+                                    className="add-data-button"
+                                    onClick={() => {
+                                      setSelectedDate(row.weekStartDate);
+                                      setDisplayModal(true);
+                                    }}
+                                  >
+                                    Add Data
+                                  </button>
+                                )}
+                              {challengeSwitch !== 'old' &&
+                                dataButtonType === 'STRAVA_GOOGLE_FIT' &&
+                                eventIDForSync.includes(row.weekStartDate) && (
+                                  <Tooltip title="Click on Sync button to sync the data">
+                                    <div
+                                      style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                      }}
+                                    >
+                                      <AlertTriangle
+                                        size={14}
+                                        style={{
+                                          marginLeft: '2px',
+                                          marginRight: '2px',
+                                          color: 'red',
+                                        }}
+                                      />
+                                      Sync Data
+                                    </div>
+                                  </Tooltip>
+                                )}
+                            </div> */}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                </>
               ) : (
                 <TableRow>
                   <TableCell
@@ -572,6 +887,165 @@ export default function PerformanceTable({
           </Table>
         </TableContainer>
       </Paper>
+      {radioValue === 'Week' || radioValue === 'Month' ? (
+        <div style={{display: 'flex'}}>
+          <div style={{width: '50%'}}>
+            <Chart
+              options={{
+                tooltip: {
+                  x: {
+                    format: 'dd/MM/yy',
+                  },
+                },
+                chart: {
+                  id: 'weekmonth',
+                },
+                dataLabels: {
+                  enabled: false,
+                },
+                stroke: {
+                  show: true,
+                  width: 2,
+                },
+
+                fill: {
+                  opacity: 1,
+                },
+                xaxis: {
+                  type: 'datetime',
+                  categories: options,
+                },
+              }}
+              series={[
+                {
+                  name: 'week',
+                  data: series,
+                },
+              ]}
+              height={350}
+              style={{
+                boxShadow:
+                  '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)',
+                borderRadius: 12,
+              }}
+              type="bar"
+              width="500"
+            />
+          </div>
+          <div style={{width: '50%', marginLeft: '20px'}}>
+            <Chart
+              options={{
+                tooltip: {
+                  x: {
+                    format: 'dd/MM/yy',
+                  },
+                },
+                chart: {
+                  id: 'weekmonth',
+                },
+                xaxis: {
+                  type: 'datetime',
+                  categories: options,
+                },
+              }}
+              series={[
+                {
+                  name: 'week',
+                  data: series,
+                },
+              ]}
+              height={350}
+              style={{
+                boxShadow:
+                  '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)',
+                borderRadius: 12,
+              }}
+              type="line"
+              width="500"
+            />
+          </div>
+        </div>
+      ) : radioValue === 'Daily' || radioValue === undefined ? (
+        <div style={{display: 'flex'}}>
+          <div style={{width: '50%'}}>
+            <Chart
+              options={{
+                tooltip: {
+                  x: {
+                    format: 'dd/MM/yy',
+                  },
+                },
+                chart: {
+                  id: 'weekmonth',
+                },
+                dataLabels: {
+                  enabled: false,
+                },
+                stroke: {
+                  show: true,
+                  width: 2,
+                },
+
+                fill: {
+                  opacity: 1,
+                },
+                xaxis: {
+                  type: 'datetime',
+                  categories: options1,
+                },
+              }}
+              series={[
+                {
+                  name: 'week',
+                  data: series1,
+                },
+              ]}
+              height={350}
+              style={{
+                boxShadow:
+                  '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)',
+                borderRadius: 12,
+              }}
+              type="bar"
+              width="500"
+            />
+          </div>
+          <div style={{width: '50%', marginLeft: '20px'}}>
+            <Chart
+              options={{
+                tooltip: {
+                  x: {
+                    format: 'dd/MM/yy',
+                  },
+                },
+                chart: {
+                  id: 'weekmonth',
+                },
+                xaxis: {
+                  type: 'datetime',
+                  categories: options1,
+                },
+              }}
+              series={[
+                {
+                  name: 'week',
+                  data: series1,
+                },
+              ]}
+              height={350}
+              style={{
+                boxShadow:
+                  '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)',
+                borderRadius: 12,
+              }}
+              type="line"
+              width="500"
+            />
+          </div>
+        </div>
+      ) : (
+        ''
+      )}
       {displayModal && (
         <AddPastDetailForm
           {...{

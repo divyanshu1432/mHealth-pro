@@ -146,8 +146,8 @@ const CreateActivityModal = ({
     totalSeat: undefined,
     onlineType: undefined,
     coachId: 1,
-    sessionDuration: '00:30',
-    gapBetweenSession: '00:20',
+    sessionDuration: undefined,
+    gapBetweenSession: undefined,
     eventNature: undefined,
   });
 
@@ -490,6 +490,7 @@ const CreateActivityModal = ({
                             ? '1px solid red'
                             : 0,
                       }}
+                      maxLength="30"
                       placeholder="Enter program name"
                       value={
                         checkForFalsy(eventObject.eventName)
@@ -1184,7 +1185,24 @@ const CreateActivityModal = ({
                           //   handleInputChange("onlineType", e.target.value);
                           // }}
                         >
-                          {eventObject.sessionDuration}
+                          <input
+                            autofocus="autofocus"
+                            style={{
+                              background: '#f3f4f6',
+                              padding: '6px 10px',
+                              borderRadius: 6,
+                              fontSize: 12,
+                              width: '85%',
+                            }}
+                            placeholder="Enter Duration Time"
+                            onChange={(e) =>
+                              handleInputChange(
+                                'sessionDuration',
+                                e.target.value
+                              )
+                            }
+                            value={eventObject.sessionDuration}
+                          />
                         </div>
                       </div>
                       <div style={{width: '50%'}}>
@@ -1204,7 +1222,24 @@ const CreateActivityModal = ({
                           //   handleInputChange("onlineType", e.target.value);
                           // }}
                         >
-                          {eventObject.gapBetweenSession}
+                          <input
+                            autofocus="autofocus"
+                            style={{
+                              background: '#f3f4f6',
+                              padding: '6px 10px',
+                              borderRadius: 6,
+                              fontSize: 12,
+                              width: '85%',
+                            }}
+                            placeholder="Enter Gap Time"
+                            onChange={(e) =>
+                              handleInputChange(
+                                'gapBetweenSession',
+                                e.target.value
+                              )
+                            }
+                            value={eventObject.gapBetweenSession}
+                          />
                         </div>
                       </div>
                     </div>

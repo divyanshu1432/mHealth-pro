@@ -14,7 +14,7 @@ import ChallengeByInvite from './ChallengeByInvite';
 import PerformanceTab from './PerformanceTab';
 import CreateTeam from './TeamForEvents/CreateOrUpdateTeam';
 import {Achievments} from './Achievments';
-import SubdayChallenge from './SundayChallenge';
+import SundayChallenge from './SundayChallenge';
 import {getLeaderBoardHeading} from '../utils/commonFunctions';
 import {
   getLeaderBoardData,
@@ -33,7 +33,6 @@ import FullScreen from './Utility/FullScreen';
 
 import ChallengeStatus from './Dashboard/ChallengeStatus';
 import Badge from '@material-ui/core/Badge';
-import SundayChallenge from './SundayChallenge';
 
 const Dashboard = () => {
   const getDefaultTab = () => {
@@ -136,7 +135,6 @@ const Dashboard = () => {
     fetchChallenges();
   }, []);
 
-  console.log(distancelogo, 'distancelogo');
   useEffect(() => {
     if (localStorage.cid && localStorage.time && localStorage.status) {
       const action = window.atob(localStorage.status);
@@ -226,7 +224,6 @@ const Dashboard = () => {
       if (res.data.response.responseMessage === 'SUCCESS') {
         let event = res.data.response.responseData?.keyword.eventId;
         seteventId(event);
-
         let selectedEventFromMainPage =
           res.data.response.responseData?.events?.filter(
             (item) => item.id == localStorage.challengeIDRegister
@@ -569,7 +566,7 @@ const Dashboard = () => {
 
     return (
       <div id="chart" className="performance-chart-container">
-        <Chart
+        {/* <Chart
           options={barChartOptions}
           series={lineState.series}
           type={'bar'}
@@ -592,7 +589,7 @@ const Dashboard = () => {
             borderRadius: 12,
           }}
           className="performance-charts"
-        />
+        /> */}
       </div>
     );
   };
@@ -1003,7 +1000,7 @@ const Dashboard = () => {
             };
           });
         });
-      console.log(dashboardState.selectedAction, 'event');
+
       await getEventGalleryData(eventObj.id).then((galleryResponse) => {
         if (galleryResponse.data.response.responseMessage === 'SUCCESS') {
           setDashboardState((prevState) => {
@@ -1055,7 +1052,7 @@ const Dashboard = () => {
       }
     }
   };
-  // console.log(distancelogo, ' logo');
+
   return (
     <div className="Dasboard">
       <TopUserDetails />

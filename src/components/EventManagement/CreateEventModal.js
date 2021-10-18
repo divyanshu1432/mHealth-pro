@@ -598,6 +598,7 @@ const CreateEventModal = ({
                               ? '1px solid red'
                               : 0,
                         }}
+                        maxLength="30"
                         placeholder="Enter event name"
                         value={
                           checkForFalsy(eventObject.challengeName)

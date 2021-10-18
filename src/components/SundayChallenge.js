@@ -602,12 +602,22 @@ const SundayChallenge = (props) => {
                 marginTop: '-10px',
                 display: 'flex',
                 justifyContent: 'center',
-                background: '#518ad6',
+                background: '#636e72',
                 height: 45,
               }}
             >
-              {' '}
-              <h2 style={{}}> Streak </h2>{' '}
+              <div style={{display: 'flex'}}>
+                <h2 style={{marginLeft: 150}}> Streak </h2>{' '}
+                <div style={{marginLeft: 130}}>
+                  <CardMedia
+                    style={{marginTop: 18, float: 'right'}}
+                    component="img"
+                    height="20"
+                    width="20"
+                    image="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/Info.png"
+                  />
+                </div>{' '}
+              </div>
             </div>
 
             {(streak && streak.streakChallenge !== null) ||
@@ -802,7 +812,10 @@ const SundayChallenge = (props) => {
                   >
                     <h4 style={{fontWeight: 'lighter'}}>
                       {' '}
-                      Your random challenge is available
+                      {/* Your random challenge is available */}
+                      Your Previous Best Streak was of{' '}
+                      {streak.eventHighestStreak} Days. Achieved between
+                      {streak.streakFromDate} and {streak.streakToDate}
                     </h4>
                   </Typography>
                 </div>
@@ -853,7 +866,7 @@ const SundayChallenge = (props) => {
                           )
                         }
                       >
-                        Ignore
+                        Change challenge
                       </button>
                     </div>
                   ) : streakTrack &&
@@ -909,15 +922,16 @@ const SundayChallenge = (props) => {
                   style={{
                     width: 130,
                     height: 25,
-                    background: '#ffa726',
+                    background: 'green',
                     float: 'right',
+                    color: 'white',
                   }}
                   className="is-success"
                   onClick={() => {
                     randomStreak('RANDOM', 'DAY', '21', props.eventId);
                   }}
                 >
-                  Random challenge
+                  Pick your challenge
                 </button>
               </Typography>
             )}
@@ -936,12 +950,22 @@ const SundayChallenge = (props) => {
               marginTop: '-10px',
               display: 'flex',
               justifyContent: 'center',
-              background: '#518ad6',
+              background: '#636e72',
               height: 45,
             }}
           >
-            {' '}
-            <h2 style={{}}> Distance </h2>{' '}
+            <div style={{display: 'flex'}}>
+              <h2 style={{marginLeft: 150}}> Distance </h2>{' '}
+              <div style={{marginLeft: 110}}>
+                <CardMedia
+                  style={{marginTop: 18, float: 'right'}}
+                  component="img"
+                  height="20"
+                  width="20"
+                  image="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/Info.png"
+                />
+              </div>{' '}
+            </div>
           </div>
           {(distance && distance.kmchallenge !== null) ||
           distanceTrack.challengeAction === 'IGNORE' ||
@@ -1118,9 +1142,9 @@ const SundayChallenge = (props) => {
                 >
                   {' '}
                   <h4 style={{width: '80%', fontWeight: 'lighter'}}>
-                    Your random challenge is available
-                    {/* Your Previous Best Distance covered in a day was of{' '}
-                    {distance.eventMaxKM} KMs. Achieved on {distance.maxKMDate}.{' '} */}
+                    {/* Your random challenge is available */}
+                    Your Previous Best Distance covered in a day was of{' '}
+                    {distance.eventMaxKM} KMs. Achieved on {distance.maxKMDate}.{' '}
                   </h4>
                 </Typography>{' '}
               </div>
@@ -1178,7 +1202,7 @@ const SundayChallenge = (props) => {
                       //   );
                       // }}
                     >
-                      Ignore
+                      Change challenge
                     </button>
                   </div>
                 ) : distanceTrack &&
@@ -1222,15 +1246,16 @@ const SundayChallenge = (props) => {
                 style={{
                   width: 130,
                   height: 25,
-                  background: '#ffa726',
+                  background: 'green',
                   float: 'right',
+                  color: 'white',
                 }}
                 className="is-success"
                 onClick={() => {
                   randomkm('RANDOM', 'KM', '21', props.eventId);
                 }}
               >
-                Random challenge
+                Pick your challenge
               </button>
             </Typography>
           )}
@@ -1248,12 +1273,22 @@ const SundayChallenge = (props) => {
               marginTop: '-10px',
               display: 'flex',
               justifyContent: 'center',
-              background: '#518ad6',
+              background: '#636e72',
               height: 45,
             }}
           >
-            {' '}
-            <h2 style={{}}> Average </h2>{' '}
+            <div style={{display: 'flex'}}>
+              <h2 style={{marginLeft: 150}}> Average </h2>{' '}
+              <div style={{marginLeft: 110}}>
+                <CardMedia
+                  style={{marginTop: 18, float: 'right'}}
+                  component="img"
+                  height="20"
+                  width="20"
+                  image="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/Info.png"
+                />
+              </div>{' '}
+            </div>{' '}
           </div>
           {(average && average.weekAvgChallenge !== null) ||
           averageTrack.challengeAction === 'IGNORE' ||
@@ -1436,7 +1471,10 @@ const SundayChallenge = (props) => {
                   {' '}
                   <h4 style={{width: '80%', fontWeight: 'lighter'}}>
                     {' '}
-                    Your random challenge is available
+                    Your random challenge is available Your Previous Best Weekly
+                    average was of {average.eventMaxWeekAverage} KMs/Week.
+                    Achieved from {average.weekAvgFromDate} to{' '}
+                    {average.weekAvgToDate}
                   </h4>
                 </Typography>
               </div>
@@ -1494,7 +1532,7 @@ const SundayChallenge = (props) => {
                       //   );
                       // }}
                     >
-                      Ignore
+                      Change challenge
                     </button>{' '}
                   </div>
                 ) : averageTrack.challengeAction === 'IGNORE' ? (
@@ -1554,7 +1592,8 @@ const SundayChallenge = (props) => {
                 style={{
                   width: 130,
                   height: 25,
-                  background: '#ffa726',
+                  background: 'green',
+                  color: 'white',
                   float: 'right',
                 }}
                 className="is-success"
@@ -1562,7 +1601,7 @@ const SundayChallenge = (props) => {
                   randomAvg('RANDOM', 'AVG', '21', props.eventId);
                 }}
               >
-                Random challenge
+                Pick your challenge
               </button>
             </Typography>
           )}

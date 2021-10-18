@@ -118,6 +118,7 @@ const CreateTeam = (props) => {
   const [maxteamMember, setmaxteamMember] = useState();
   const [TL, setTL] = useState();
   const [activeInTeam, setactiveInTeam] = useState();
+  const [tag, settag] = useState('');
   const openUserListModal = () => {
     setuserListModal(true);
   };
@@ -707,15 +708,17 @@ const CreateTeam = (props) => {
     );
   };
 
-  const topUser = (name, img) => {
+  const topUser = (name, img, tag) => {
     setteam(name);
     setteamImg(img);
+    settag(tag);
     setuserList(sessionteamRank.usersList);
   };
 
-  const leaderBoardUser = (name, img) => {
+  const leaderBoardUser = (name, img, tagline) => {
     setteam(name);
     setteamImg(img);
+    settag(tagline);
     var marvelHeroes = LeaderboardData.filter(function (hero) {
       const x = hero.teamName == name;
       return x;
@@ -1676,14 +1679,18 @@ const CreateTeam = (props) => {
                   : 'https://toppng.com/uploads/preview/free-icons-team-icon-11553443974c84uvvhqrz.png'
               }
               style={{
-                width: 40,
-                height: 40,
-                top: 30,
+                width: 60,
+                height: 60,
+                // marginTop: 10,
                 borderRadius: 100,
+                objectFit: 'cover',
                 marginRight: 20,
               }}
             />{' '}
-            <h4> {team} </h4>{' '}
+            <div style={{display: 'flex', flexDirection: 'column'}}>
+              <h2> {team} </h2>
+              <h3 style={{marginTop: -15, fontWeight: 'lighter'}}> {tag} </h3>
+            </div>{' '}
           </div>
           <Table
             style={{fontSize: 9}}
@@ -1841,10 +1848,13 @@ const CreateTeam = (props) => {
                 marginRight: 20,
               }}
             />{' '}
-            <h4> {team} </h4>{' '}
+            <div style={{display: 'flex', flexDirection: 'column'}}>
+              <h2> {team} </h2>
+              <h3 style={{marginTop: -15, fontWeight: 'lighter'}}> {tag} </h3>
+            </div>{' '}
           </div>{' '}
           <h3>
-            <strong> Please confirm to join {team} </strong>
+            <strong> Are you sure to join ? </strong>
           </h3>
           <div style={{display: 'flex', justifyContent: 'space-around'}}>
             {' '}
@@ -1866,7 +1876,7 @@ const CreateTeam = (props) => {
                 height: 30,
                 width: 90,
                 color: 'white',
-                background: '#d65151',
+                background: 'green',
               }}
               onClick={() => joinTeam(JoinId)}
             >
@@ -2141,7 +2151,7 @@ const CreateTeam = (props) => {
                   </TableCell>
                   <TableCell align="center">
                     {' '}
-                    <AddIcon
+                    {/* <AddIcon
                       onClick={() => {
                         topUser(
                           sessionteamRank.teamName,
@@ -2150,7 +2160,19 @@ const CreateTeam = (props) => {
                           openUserListModal();
                       }}
                       style={{cursor: 'pointer'}}
-                    />{' '}
+                    />{' '} */}
+                    <img
+                      src="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/more.png"
+                      style={{width: 35, height: 35}}
+                      onClick={() => {
+                        topUser(
+                          sessionteamRank.teamName,
+                          sessionteamRank.teamMascot,
+                          sessionteamRank.teamTagLine
+                        ),
+                          openUserListModal();
+                      }}
+                    />
                   </TableCell>
                 </TableRow>
               ) : (
@@ -2213,13 +2235,25 @@ const CreateTeam = (props) => {
                         </TableCell>
                         <TableCell align="center">
                           {' '}
-                          <AddIcon
+                          {/* <AddIcon
                             onClick={() => {
                               leaderBoardUser(item.teamName, item.teamMascot),
                                 openUserListModal();
                             }}
                             style={{cursor: 'pointer'}}
-                          />{' '}
+                          />{' '} */}
+                          <img
+                            src="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/more.png"
+                            style={{width: 35, height: 35}}
+                            onClick={() => {
+                              leaderBoardUser(
+                                item.teamName,
+                                item.teamMascot,
+                                item.teamTagLine
+                              ),
+                                openUserListModal();
+                            }}
+                          />
                         </TableCell>
                         {!activeInTeam && (
                           <TableCell align="center">

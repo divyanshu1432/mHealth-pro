@@ -142,15 +142,15 @@ const headCells = [
     numeric: false,
     disablePadding: true,
   },
-  // {
-  //   label: 'Gender',
-  //   id: 'gender',
-  //   numeric: false,
-  //   disablePadding: true,
-  // },
+  {
+    label: 'Gender',
+    id: 'gender',
+    numeric: false,
+    disablePadding: true,
+  },
   {
     label: 'Achievement',
-    id: 'valueTillDate',
+    // id: 'valueTillDate',
     numeric: false,
     disablePadding: true,
   },
@@ -187,13 +187,13 @@ const headCells = [
   //   disablePadding: true
   // },
   {
-    label: 'Total Km',
+    label: 'Total.Km',
     id: 'value',
     numeric: true,
     disablePadding: true,
   },
   {
-    label: 'Avg Km',
+    label: 'Avg.Km',
     id: 'averageDistanceCovered',
     numeric: true,
     disablePadding: true,
@@ -205,7 +205,7 @@ const headCells = [
     disablePadding: true,
   },
   {
-    label: 'Active Days',
+    label: 'Active.Day',
     id: 'totalParticipationDays',
     numeric: true,
     disablePadding: true,
@@ -240,7 +240,8 @@ function EnhancedTableHead(props) {
         )}
         {headCells.map((headCell) => (
           <TableCell
-            style={{maxWidth: 80}}
+            // style={{}}
+            style={{padding: 1}}
             key={headCell.id}
             align="center"
             padding={headCell.disablePadding ? 'none' : 'default'}
@@ -872,6 +873,7 @@ export default function EnhancedTable({
                             </TableCell>
                           )}
                           <TableCell
+                            style={{padding: 2}}
                             component="th"
                             id={labelId}
                             scope="row"
@@ -882,7 +884,7 @@ export default function EnhancedTable({
                               {row.rank ? row.rank : '-'}
                             </div>
                           </TableCell>
-                          <TableCell align="center">
+                          <TableCell align="center" style={{padding: 5}}>
                             <div
                               style={{
                                 display: 'flex',
@@ -933,12 +935,35 @@ export default function EnhancedTable({
                               </div>
                             </div>
                           </TableCell>
-                          {/* <TableCell align="center">
-                            <div style={{fontSize: 12}}>
-                              {row.gender ? row.gender : '-'}
+                          <TableCell align="center" style={{}}>
+                            <div style={{fontSize: 12, padding: 5}}>
+                              {(row.gender && row.gender === 'Male') ||
+                              row.gender === 'male' ||
+                              row.gender === 'MALE' ? (
+                                <img
+                                  src="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/Male.png"
+                                  style={{
+                                    objectFit: 'cover',
+                                    width: 25,
+                                    height: 25,
+                                  }}
+                                />
+                              ) : row.gender == 'Female' ||
+                                row.gender === 'female' ||
+                                row.gender === 'FEMALE' ? (
+                                <img
+                                  src="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/Female.png"
+                                  style={{
+                                    width: 25,
+                                    height: 25,
+                                  }}
+                                />
+                              ) : (
+                                '-'
+                              )}
                             </div>
-                          </TableCell> */}
-                          <TableCell align="center">
+                          </TableCell>
+                          <TableCell align="center" style={{padding: 0}}>
                             <div style={{fontSize: 12}}>
                               {row.achievementIcon ? (
                                 <img
@@ -947,12 +972,23 @@ export default function EnhancedTable({
                                     height: 35,
                                     borderRadius: '100%',
                                   }}
-                                  src={
-                                    row.achievementIcon && row.achievementIcon
-                                  }
+                                  src="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/Distance/D_5K_GreyScale_20210929.png"
+                                  // {
+                                  //   // row.achievementIcon && row.achievementIcon
+                                  // }
                                 />
                               ) : (
-                                ''
+                                <img
+                                  style={{
+                                    width: 35,
+                                    height: 35,
+                                    borderRadius: '100%',
+                                  }}
+                                  src="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/Distance/D_5K_GreyScale_20210929.png"
+                                  // {
+                                  //   // row.achievementIcon && row.achievementIcon
+                                  // }
+                                />
                               )}
                             </div>
                           </TableCell>{' '}
@@ -961,7 +997,7 @@ export default function EnhancedTable({
                               {row.city ? row.city : '-'}
                             </div>
                           </TableCell>
-                          <TableCell align="center">
+                          <TableCell align="center" style={{padding: 0}}>
                             <div
                               style={{
                                 fontSize: 12,
@@ -998,22 +1034,24 @@ export default function EnhancedTable({
                             </div>
                           </TableCell>
                           <TableCell align="center">
-                            <div style={{fontSize: 12}}>
+                            <div style={{fontSize: 12, width: 70}}>
                               {row.valueTillDate ? row.valueTillDate : '-'}
                             </div>
                           </TableCell>
-                          <TableCell align="center">
+                          <TableCell align="center" style={{padding: 3}}>
                             <div
                               style={{
-                                width: 80,
+                                // width: 40,
                                 fontSize: 12,
                                 display: 'flex',
                                 justifyContent: 'space-between',
                               }}
                             >
-                              {row.lastDistanceCovered
-                                ? row.lastDistanceCovered.toFixed(2)
-                                : '0'}
+                              <div>
+                                {row.lastDistanceCovered
+                                  ? row.lastDistanceCovered.toFixed(2)
+                                  : '0'}{' '}
+                              </div>
                               {row.verificationImage ? (
                                 <Tooltip
                                   title="verified"
@@ -1024,10 +1062,9 @@ export default function EnhancedTable({
                                     // title="Verified"
                                     src={row.verificationImage}
                                     style={{
-                                      marginTop: -7,
-                                      height: 30,
-                                      width: 30,
-                                      marginLeft: 10,
+                                      // marginLeft: -7,
+                                      height: 15,
+                                      width: 15,
                                     }}
                                   />
                                 </Tooltip>
@@ -1036,7 +1073,7 @@ export default function EnhancedTable({
                               )}
                             </div>
                           </TableCell>
-                          <TableCell align="center">
+                          <TableCell align="center" style={{padding: 0}}>
                             <div style={{fontSize: 12}}>
                               {row.value ? row.value.toFixed(2) : '0'}
                             </div>
@@ -1048,12 +1085,12 @@ export default function EnhancedTable({
                                 : '0'}
                             </div>
                           </TableCell>
-                          <TableCell align="center">
+                          <TableCell align="center" style={{padding: 0}}>
                             <div style={{fontSize: 12}}>
                               {row.leadBy ? row.leadBy : ''}
                             </div>
                           </TableCell>
-                          <TableCell align="center" style={{}}>
+                          <TableCell align="center" style={{padding: 0}}>
                             <div style={{fontSize: 12}}>
                               {row.totalParticipationDays
                                 ? row.totalParticipationDays

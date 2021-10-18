@@ -606,8 +606,16 @@ const SundayChallenge = (props) => {
               }}
             >
               <div style={{display: 'flex'}}>
-                <h2 style={{marginLeft: 150}}> Streak </h2>{' '}
-                <div style={{marginLeft: 130}}>
+                <h2 style={{marginLeft: 150}}> Streak </h2>
+                <ReactTooltip multiline={true} className="reactTool" />{' '}
+                <div
+                  style={{marginLeft: 130}}
+                  data-tip="Streak is defined as Number of days walked in continuation without taking any break.<br/>
+                            Challenge will start from your accepted date and will continue till the target date. <br/>
+                            You can see your progress on card, and on completion of target,<br/>
+                             you will earn a badge which can be viewed in Achievement section of leaderboard."
+                  data-multiline="true"
+                >
                   <CardMedia
                     style={{marginTop: 18, float: 'right'}}
                     component="img"
@@ -885,15 +893,30 @@ const SundayChallenge = (props) => {
                         <ReactTooltip />
                         {streakTrack.streakStatus !== 'COMPLETED' ? (
                           //
-                          <progress
-                            style={{width: '300px'}}
-                            id="file"
-                            value={
-                              streakTrack && parseInt(streakTrack.streakAverage)
-                            }
-                            max="100"
-                            data-tip={Math.ceil(streakTrack.streakAverage)}
-                          />
+                          <div style={{display: 'flex'}}>
+                            <progress
+                              style={{width: '280px'}}
+                              id="file"
+                              value={
+                                streakTrack &&
+                                parseInt(streakTrack.streakAverage)
+                              }
+                              max="100"
+                              data-tip={Math.ceil(streakTrack.streakAverage)}
+                            >
+                              {' '}
+                            </progress>
+                            <p
+                              style={{
+                                fontSize: 12,
+                                marginLeft: 15,
+                                marginTop: -1,
+                              }}
+                            >
+                              {' '}
+                              {Math.ceil(streakTrack.streakAverage)}%
+                            </p>
+                          </div>
                         ) : (
                           <progress
                             style={{width: '300px'}}
@@ -958,12 +981,14 @@ const SundayChallenge = (props) => {
             <div style={{display: 'flex'}}>
               <h2 style={{marginLeft: 150}}> Distance </h2>{' '}
               <div style={{marginLeft: 110}}>
+                <ReactTooltip multiline={true} />
                 <CardMedia
                   style={{marginTop: 18, float: 'right'}}
                   component="img"
                   height="20"
                   width="20"
                   image="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/Info.png"
+                  data-tip="In this challenge you need to cover mentioned KM in a day,<br/> You will get 7 days to achieve the target, once you achieve it, <br/>you will earn a badge which can be seen in Achievement section of leaderboard."
                 />
               </div>{' '}
             </div>
@@ -1281,12 +1306,15 @@ const SundayChallenge = (props) => {
             <div style={{display: 'flex'}}>
               <h2 style={{marginLeft: 150}}> Average </h2>{' '}
               <div style={{marginLeft: 110}}>
+                <ReactTooltip multiline={true} />
                 <CardMedia
                   style={{marginTop: 18, float: 'right'}}
                   component="img"
                   height="20"
                   width="20"
                   image="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/Info.png"
+                  data-tip="This challenge comprise of Average of distance covered in 7 days <br/> Starting from date of acceptance to till the end of challenge date. <br/>
+Once achieved, you will earn a badge which can be seen in Achievement<br/> section of leaderboard."
                 />
               </div>{' '}
             </div>{' '}
@@ -1558,13 +1586,29 @@ const SundayChallenge = (props) => {
                       {' '}
                       <ReactTooltip />
                       {averageTrack.avgWeekStatus !== 'COMPLETED' ? (
-                        <progress
-                          style={{width: '300px'}}
-                          id="file"
-                          value={averageTrack.progressPercentage}
-                          max="100"
-                          data-tip={Math.ceil(averageTrack.progressPercentage)}
-                        />
+                        <div style={{display: 'flex'}}>
+                          <progress
+                            style={{width: '300px'}}
+                            id="file"
+                            value={averageTrack.progressPercentage}
+                            max="100"
+                            data-tip={Math.ceil(
+                              averageTrack.progressPercentage
+                            )}
+                          >
+                            {' '}
+                          </progress>
+                          <p
+                            style={{
+                              fontSize: 12,
+                              marginLeft: 15,
+                              marginTop: -1,
+                            }}
+                          >
+                            {' '}
+                            {Math.ceil(averageTrack.progressPercentage)}%
+                          </p>
+                        </div>
                       ) : (
                         <progress
                           style={{width: '300px'}}

@@ -881,10 +881,11 @@ const CreateTeam = (props) => {
     }
   };
 
-  const teamJoinData = (name, img, id) => {
+  const teamJoinData = (name, img, id, tag) => {
     setteam(name);
     setteamImg(img);
     setJoinId(id);
+    settag(tag);
   };
 
   console.warn(team, teamImg, JoinId);
@@ -1849,13 +1850,18 @@ const CreateTeam = (props) => {
               }}
             />{' '}
             <div style={{display: 'flex', flexDirection: 'column'}}>
-              <h2> {team} </h2>
-              <h3 style={{marginTop: -15, fontWeight: 'lighter'}}> {tag} </h3>
+              <h3> Team Name: {team} </h3>
+              <h5 style={{marginTop: -10, fontWeight: 'lighter'}}>
+                {' '}
+                <span style={{fontWeight: 'bolder'}}> Team Motto: </span>{' '}
+                <span>{tag} </span>{' '}
+              </h5>
             </div>{' '}
           </div>{' '}
           <h3>
-            <strong> Are you sure to join ? </strong>
+            <strong> Are you sure you want to join {team} ? </strong>
           </h3>
+          {/* <h4 style={{fontWeight: 'lighter', marginTop: -10}}> {tag} </h4> */}
           <div style={{display: 'flex', justifyContent: 'space-around'}}>
             {' '}
             <button
@@ -2276,7 +2282,8 @@ const CreateTeam = (props) => {
                                         teamJoinData(
                                           item.teamName,
                                           item.teamMascot,
-                                          item.teamId
+                                          item.teamId,
+                                          item.teamTagLine
                                         );
                                         onjoinModal();
                                       }}

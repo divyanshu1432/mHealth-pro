@@ -142,15 +142,16 @@ const headCells = [
     numeric: false,
     disablePadding: true,
   },
+
   {
-    label: 'Gender',
-    id: 'gender',
+    label: 'Achievement',
+    // id: 'valueTillDate',
     numeric: false,
     disablePadding: true,
   },
   {
-    label: 'Achievement',
-    // id: 'valueTillDate',
+    label: 'Gender',
+    id: 'gender',
     numeric: false,
     disablePadding: true,
   },
@@ -935,6 +936,24 @@ export default function EnhancedTable({
                               </div>
                             </div>
                           </TableCell>
+                          <TableCell align="center" style={{padding: 0}}>
+                            <div style={{fontSize: 12}}>
+                              {row.achievementIcon ? (
+                                <img
+                                  style={{
+                                    width: 35,
+                                    height: 35,
+                                    borderRadius: '100%',
+                                  }}
+                                  src={
+                                    row.achievementIcon && row.achievementIcon
+                                  }
+                                />
+                              ) : (
+                                '-'
+                              )}
+                            </div>
+                          </TableCell>{' '}
                           <TableCell align="center" style={{}}>
                             <div style={{fontSize: 12, padding: 5}}>
                               {(row.gender && row.gender === 'Male') ||
@@ -963,35 +982,6 @@ export default function EnhancedTable({
                               )}
                             </div>
                           </TableCell>
-                          <TableCell align="center" style={{padding: 0}}>
-                            <div style={{fontSize: 12}}>
-                              {row.achievementIcon ? (
-                                <img
-                                  style={{
-                                    width: 35,
-                                    height: 35,
-                                    borderRadius: '100%',
-                                  }}
-                                  src="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/Distance/D_5K_GreyScale_20210929.png"
-                                  // {
-                                  //   // row.achievementIcon && row.achievementIcon
-                                  // }
-                                />
-                              ) : (
-                                <img
-                                  style={{
-                                    width: 35,
-                                    height: 35,
-                                    borderRadius: '100%',
-                                  }}
-                                  src="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/Distance/D_5K_GreyScale_20210929.png"
-                                  // {
-                                  //   // row.achievementIcon && row.achievementIcon
-                                  // }
-                                />
-                              )}
-                            </div>
-                          </TableCell>{' '}
                           <TableCell align="center">
                             <div style={{fontSize: 12}}>
                               {row.city ? row.city : '-'}

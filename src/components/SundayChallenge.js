@@ -240,7 +240,6 @@ const SundayChallenge = (props) => {
 
   return (
     <>
-      <ReactTooltip />
       <Modal
         open={joinModal}
         styles={{modal: {borderRadius: '10px'}}}
@@ -883,7 +882,9 @@ const SundayChallenge = (props) => {
                       {' '}
                       <div style={{marginLeft: 20}}>
                         {' '}
+                        <ReactTooltip />
                         {streakTrack.streakStatus !== 'COMPLETED' ? (
+                          //
                           <progress
                             style={{width: '300px'}}
                             id="file"
@@ -891,7 +892,7 @@ const SundayChallenge = (props) => {
                               streakTrack && parseInt(streakTrack.streakAverage)
                             }
                             max="100"
-                            data-tip={streakTrack.streakAverage}
+                            data-tip={Math.ceil(streakTrack.streakAverage)}
                           />
                         ) : (
                           <progress
@@ -1555,13 +1556,14 @@ const SundayChallenge = (props) => {
                       }}
                     >
                       {' '}
+                      <ReactTooltip />
                       {averageTrack.avgWeekStatus !== 'COMPLETED' ? (
                         <progress
                           style={{width: '300px'}}
                           id="file"
                           value={averageTrack.progressPercentage}
                           max="100"
-                          data-tip={averageTrack.progressPercentage}
+                          data-tip={Math.ceil(averageTrack.progressPercentage)}
                         />
                       ) : (
                         <progress

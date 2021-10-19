@@ -980,15 +980,18 @@ const SundayChallenge = (props) => {
           >
             <div style={{display: 'flex'}}>
               <h2 style={{marginLeft: 150}}> Distance </h2>{' '}
-              <div style={{marginLeft: 110}}>
-                <ReactTooltip multiline={true} />
+              <ReactTooltip multiline={true} />
+              <div
+                style={{marginLeft: 110}}
+                data-tip="In this challenge you need to cover mentioned KM in a day,<br/> You will get 7 days to achieve the target, once you achieve it, <br/>you will earn a badge which can be seen in Achievement section of leaderboard."
+                data-multiline="true"
+              >
                 <CardMedia
                   style={{marginTop: 18, float: 'right'}}
                   component="img"
                   height="20"
                   width="20"
                   image="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/Info.png"
-                  data-tip="In this challenge you need to cover mentioned KM in a day,<br/> You will get 7 days to achieve the target, once you achieve it, <br/>you will earn a badge which can be seen in Achievement section of leaderboard."
                 />
               </div>{' '}
             </div>
@@ -1305,16 +1308,19 @@ const SundayChallenge = (props) => {
           >
             <div style={{display: 'flex'}}>
               <h2 style={{marginLeft: 150}}> Average </h2>{' '}
-              <div style={{marginLeft: 110}}>
-                <ReactTooltip multiline={true} />
+              <ReactTooltip multiline={true} />{' '}
+              <div
+                style={{marginLeft: 110}}
+                data-tip="This challenge comprise of Average of distance covered in 7 days <br/> Starting from date of acceptance to till the end of challenge date. <br/>
+Once achieved, you will earn a badge which can be seen in Achievement<br/> section of leaderboard."
+                data-multiline="true"
+              >
                 <CardMedia
                   style={{marginTop: 18, float: 'right'}}
                   component="img"
                   height="20"
                   width="20"
                   image="https://walkathon21.s3.ap-south-1.amazonaws.com/logo/Info.png"
-                  data-tip="This challenge comprise of Average of distance covered in 7 days <br/> Starting from date of acceptance to till the end of challenge date. <br/>
-Once achieved, you will earn a badge which can be seen in Achievement<br/> section of leaderboard."
                 />
               </div>{' '}
             </div>{' '}

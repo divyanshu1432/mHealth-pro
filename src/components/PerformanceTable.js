@@ -310,7 +310,7 @@ export default function PerformanceTable({
       })
       .then((res) => {
         {
-          res.data.response.responseData.map((e1) => {
+          res.data.response?.responseData?.map((e1) => {
             startdate.push(e1.weekStartDate);
             weeksum.push(e1.weekSum);
           });
@@ -319,14 +319,19 @@ export default function PerformanceTable({
           setSeries(weeksum);
 
           setRadioValue(val);
-          res.data.response.responseData.sort(function (a, b) {
+          res.data.response?.responseData?.sort(function (a, b) {
             return new Date(b.weekStartDate) - new Date(a.weekStartDate);
-          })
-            ? setWeekMonth(res.data.response.responseData)
-            : message.error(res.data.response.responseMessage);
+          });
+          {
+            res?.data?.response?.responseData
+              ? setWeekMonth(res?.data?.response?.responseData)
+              : '';
+          }
         }
       });
   };
+
+  console.log(weekMonth, 'weemonth');
   useEffect(() => {
     // getweekmonthlist();
     // handleChange1();
@@ -544,7 +549,7 @@ export default function PerformanceTable({
                   <TablePagination
                     rowsPerPageOptions={[25, 50, 75, 100]}
                     component="div"
-                    count={weekMonth.length}
+                    count={weekMonth && weekMonth.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onChangePage={handleChangePage}
@@ -674,55 +679,60 @@ export default function PerformanceTable({
                 </>
               ) : radioValue === 'Week' ? (
                 <>
-                  {stableSort(weekMonth, getComparator(order, orderBy))
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row, index) => {
-                      // console.log(row);
-                      return (
-                        <TableRow
-                          hover
-                          tabIndex={-1}
-                          key={row.userId + '' + index}
-                          className="performace-table-row"
-                        >
-                          <TableCell align="center">
-                            <div style={{fontSize: 12}}>{index + 1}</div>
-                          </TableCell>
-                          <TableCell align="center">
-                            <div style={{fontSize: 12}}>
-                              {row.weekStartDate}
-                            </div>
-                          </TableCell>
+                  {' '}
+                  {weekMonth &&
+                    stableSort(weekMonth, getComparator(order, orderBy))
+                      .slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                      .map((row, index) => {
+                        // console.log(row);
+                        return (
+                          <TableRow
+                            hover
+                            tabIndex={-1}
+                            key={row.userId + '' + index}
+                            className="performace-table-row"
+                          >
+                            <TableCell align="center">
+                              <div style={{fontSize: 12}}>{index + 1}</div>
+                            </TableCell>
+                            <TableCell align="center">
+                              <div style={{fontSize: 12}}>
+                                {row.weekStartDate}
+                              </div>
+                            </TableCell>
 
-                          <TableCell align="center">
-                            <div
-                              style={{
-                                fontSize: 12,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                              }}
-                            >
-                              {row.weekSum ? row.weekSum : 0}
-                            </div>
-                          </TableCell>
-                          <TableCell align="center">
-                            <div style={{fontSize: 12}}>
-                              <img
-                                src={
-                                  row.dataSource
-                                    ? APP.dataSourceLogo[row.dataSource]
-                                    : 'https://walkathon21.s3.ap-south-1.amazonaws.com/logo/NotSet.svg'
-                                }
+                            <TableCell align="center">
+                              <div
                                 style={{
-                                  width: 30,
-                                  height: 30,
+                                  fontSize: 12,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
                                 }}
-                              />
-                            </div>
-                          </TableCell>
-                          <TableCell align="center">
-                            {/* <div style={{fontSize: 12}}>
+                              >
+                                {row.weekSum ? row.weekSum : 0}
+                              </div>
+                            </TableCell>
+                            <TableCell align="center">
+                              <div style={{fontSize: 12}}>
+                                <img
+                                  src={
+                                    row.dataSource
+                                      ? APP.dataSourceLogo[row.dataSource]
+                                      : 'https://walkathon21.s3.ap-south-1.amazonaws.com/logo/NotSet.svg'
+                                  }
+                                  style={{
+                                    width: 30,
+                                    height: 30,
+                                  }}
+                                />
+                              </div>
+                            </TableCell>
+                            <TableCell align="center">
+                              {/* <div style={{fontSize: 12}}>
                               {challengeSwitch !== 'old' &&
                                 row.value == 0 &&
                                 row.dataSource == 'WHATSAPP' &&
@@ -761,62 +771,66 @@ export default function PerformanceTable({
                                   </Tooltip>
                                 )}
                             </div> */}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                 </>
               ) : radioValue === 'Month' ? (
                 <>
-                  {stableSort(weekMonth, getComparator(order, orderBy))
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row, index) => {
-                      // console.log(row);
-                      return (
-                        <TableRow
-                          hover
-                          tabIndex={-1}
-                          key={row.userId + '' + index}
-                          className="performace-table-row"
-                        >
-                          <TableCell align="center">
-                            <div style={{fontSize: 12}}>{index + 1}</div>
-                          </TableCell>
-                          <TableCell align="center">
-                            <div style={{fontSize: 12}}>
-                              {row.weekStartDate}
-                            </div>
-                          </TableCell>
+                  {weekMonth &&
+                    stableSort(weekMonth, getComparator(order, orderBy))
+                      .slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                      .map((row, index) => {
+                        // console.log(row);
+                        return (
+                          <TableRow
+                            hover
+                            tabIndex={-1}
+                            key={row.userId + '' + index}
+                            className="performace-table-row"
+                          >
+                            <TableCell align="center">
+                              <div style={{fontSize: 12}}>{index + 1}</div>
+                            </TableCell>
+                            <TableCell align="center">
+                              <div style={{fontSize: 12}}>
+                                {row.weekStartDate}
+                              </div>
+                            </TableCell>
 
-                          <TableCell align="center">
-                            <div
-                              style={{
-                                fontSize: 12,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                              }}
-                            >
-                              {row.weekSum ? row.weekSum : 0}
-                            </div>
-                          </TableCell>
-                          <TableCell align="center">
-                            <div style={{fontSize: 12}}>
-                              <img
-                                src={
-                                  row.dataSource
-                                    ? APP.dataSourceLogo[row.dataSource]
-                                    : 'https://walkathon21.s3.ap-south-1.amazonaws.com/logo/NotSet.svg'
-                                }
+                            <TableCell align="center">
+                              <div
                                 style={{
-                                  width: 30,
-                                  height: 30,
+                                  fontSize: 12,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
                                 }}
-                              />
-                            </div>
-                          </TableCell>
-                          <TableCell align="center">
-                            {/* <div style={{fontSize: 12}}>
+                              >
+                                {row.weekSum ? row.weekSum : 0}
+                              </div>
+                            </TableCell>
+                            <TableCell align="center">
+                              <div style={{fontSize: 12}}>
+                                <img
+                                  src={
+                                    row.dataSource
+                                      ? APP.dataSourceLogo[row.dataSource]
+                                      : 'https://walkathon21.s3.ap-south-1.amazonaws.com/logo/NotSet.svg'
+                                  }
+                                  style={{
+                                    width: 30,
+                                    height: 30,
+                                  }}
+                                />
+                              </div>
+                            </TableCell>
+                            <TableCell align="center">
+                              {/* <div style={{fontSize: 12}}>
                               {
                                 row.weekSum === 0 &&
                                 row.dataSource == 'WHATSAPP' &&
@@ -855,10 +869,10 @@ export default function PerformanceTable({
                                   </Tooltip>
                                 )}
                             </div> */}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                 </>
               ) : (
                 <TableRow>

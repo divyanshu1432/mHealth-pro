@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import login from '../../assets/login.svg';
+import login from '../../assets/login.png';
 import 'react-phone-input-2/lib/style.css';
 import {useHistory} from 'react-router-dom';
 import UserInfoForm from './UserInfoForm';

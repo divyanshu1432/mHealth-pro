@@ -36,6 +36,7 @@ import {
   teamLeaderBoardData,
   activeUserInTeam,
   validateUser,
+  leaveTeam,
 } from '../../services/apicollection';
 import {APP} from '../../utils/appConfig';
 import List from '@material-ui/core/List';
@@ -84,6 +85,7 @@ const CreateTeam = (props) => {
       setupdateerr(''),
       setregUser([]),
       setinActiveErr('');
+    setLeaderId();
   };
   const onOpenMemberModal = () => {
     closeMember(true), registeredUser();
@@ -118,19 +120,32 @@ const CreateTeam = (props) => {
   const [maxteamMember, setmaxteamMember] = useState();
   const [TL, setTL] = useState();
   const [activeInTeam, setactiveInTeam] = useState();
+  const [leaveId, setleaveId] = useState();
   const [tag, settag] = useState('');
+  const [ids, setids] = useState([]);
   const openUserListModal = () => {
     setuserListModal(true);
   };
-  console.warn(maxteamMember, 'members');
+
   const closeUserListModal = () => {
     setuserListModal(false);
+    setleaveId();
   };
   const closeUpdateTeam = () => {
     setupdateTeam(false);
   };
   const openUpdateTeam = () => {
     setupdateTeam(true);
+  };
+
+  const [leaveModal, setleaveModal] = useState(false);
+
+  const openLeaveModal = () => {
+    setleaveModal(true);
+  };
+
+  const closeLeaveModal = () => {
+    setleaveModal(false);
   };
 
   const handelchange = (event) => {
@@ -162,14 +177,12 @@ const CreateTeam = (props) => {
     // const a = editTeam
   };
 
-  console.warn(editImg);
   // (teamname);
 
   useEffect(() => {
     setCheckmemberList(memberlist);
   }, []);
 
-  console.log(editImg, 'image');
   const getTeam = () => {
     setTeamName([]);
     const URL = `${urlPrefix}${renderTeamList}?challengerZoneId=${props.eventId}`;
@@ -196,6 +209,7 @@ const CreateTeam = (props) => {
         }
       });
   };
+
   // useEffect(() => {
   const getLeaderBoardData = () => {
     const URL = `${urlPrefix}${teamLeaderBoardData}?challengerZoneId=${props.eventId}`;
@@ -219,8 +233,10 @@ const CreateTeam = (props) => {
             res.data.response.responseData.teamAndUserLeaderBoard[0]
               .rankWiseTeamLeaderBoard
           );
+          setids(res.data.response.responseData.teamIds);
           setmaxteamMember(res.data.response.responseData.eventMaxMember);
           setactiveInTeam(res.data.response.responseData.active);
+
           setsessionteamRank(
             res.data.response.responseData.teamAndUserLeaderBoard[0]
               .sessionUserTeamRank
@@ -234,6 +250,13 @@ const CreateTeam = (props) => {
 
   sessionteamRank;
   // }, []);
+  // console.log(LeaderboardData);
+  // useEffect(() => {
+  //   check();
+  // });
+  // ?.userId);
+
+  console.log(activeInTeam, 'active');
 
   function descendingComparator(a, b, orderBy) {
     let firstValue =
@@ -331,7 +354,7 @@ const CreateTeam = (props) => {
           const x = hero.id == `${props.eventId}`;
           return x;
         });
-        console.warn(marvelHeroes, 'edbcvcoecljec;o');
+
         {
           marvelHeroes[0] && setMod(marvelHeroes[0]);
           setisAdmin(res.data.response.responseData.isAdmin);
@@ -340,7 +363,6 @@ const CreateTeam = (props) => {
       });
   };
 
-  console.log(mod, 'mod');
   const registeredUser = () => {
     // setId(val);
     const URL = `${urlPrefix}${activeUserInTeam}?challengerZoneId=${props.eventId}&teamId=${id}`;
@@ -500,7 +522,7 @@ const CreateTeam = (props) => {
 
   const updateTeamData = (e) => {
     e.preventDefault();
-    console.log(typeof editImg, 'typeof');
+
     let updatepayload = {};
     if (editImg == '') {
       updatepayload = {
@@ -552,7 +574,6 @@ const CreateTeam = (props) => {
       });
   };
 
-  teamname, 'hgtghgbtb';
   const useStyles1 = makeStyles((theme) => ({
     root: {
       flexShrink: 0,
@@ -708,11 +729,12 @@ const CreateTeam = (props) => {
     );
   };
 
-  const topUser = (name, img, tag) => {
+  const topUser = (name, img, tag, leaveId) => {
     setteam(name);
     setteamImg(img);
     settag(tag);
     setuserList(sessionteamRank.usersList);
+    setleaveId(leaveId);
   };
 
   const leaderBoardUser = (name, img, tagline) => {
@@ -793,6 +815,33 @@ const CreateTeam = (props) => {
     );
   }
 
+  const leaveTeamByUser = (a, b, c) => {
+    // console.log(a, b, c);
+    const URL = `${urlPrefix}${leaveTeam}?challengerZoneId=${
+      props.eventId
+    }&teamId=${leaveId}&userId=${localStorage.getItem('userId')}`;
+    return axios
+      .put(
+        URL,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            timeStamp: 'timestamp',
+            accept: '*/*',
+            'Access-Control-Allow-Origin': '*',
+            withCredentials: true,
+            'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,OPTIONS',
+            'Access-Control-Allow-Headers':
+              'accept, content-type, x-access-token, x-requested-with',
+          },
+        }
+      )
+      .then((res) => {
+        closeLeaveModal(), closeUserListModal(), getLeaderBoardData();
+      });
+  };
+
   const useStyles = makeStyles((theme) => ({
     formControl: {
       margin: theme.spacing(3),
@@ -827,23 +876,23 @@ const CreateTeam = (props) => {
   const submitTeam = () => {
     // (listarray);
     let teampayload = {};
-    if (TL == '') {
-      teampayload = {
-        // id:null,
-        challengerZoneId: props.eventId,
-        teamId: parseInt(teamId),
-        teamLeaderId: parseInt(LeaderId),
-        teamMembersList: listarray,
-      };
-    } else {
-      teampayload = {
-        // id:null,
-        challengerZoneId: props.eventId,
-        teamId: parseInt(teamId),
-        teamLeaderId: parseInt(TL),
-        teamMembersList: listarray,
-      };
-    }
+    // if (TL == '') {
+    //   teampayload = {
+    //     // id:null,
+    //     challengerZoneId: props.eventId,
+    //     teamId: parseInt(teamId),
+    //     teamLeaderId: parseInt(LeaderId),
+    //     teamMembersList: listarray,
+    //   };
+    // } else {
+    teampayload = {
+      // id:null,
+      challengerZoneId: props.eventId,
+      teamId: parseInt(teamId),
+      teamLeaderId: parseInt(LeaderId),
+      teamMembersList: listarray,
+    };
+    // }
 
     if (listarray.includes(parseInt(LeaderId)) || LeaderId == null) {
       const url = `${urlPrefix}v1.0/addRegisteredUsersInTeam`;
@@ -888,7 +937,6 @@ const CreateTeam = (props) => {
     settag(tag);
   };
 
-  console.warn(team, teamImg, JoinId);
   const removemember = () => {
     const inActiveMember = `${urlPrefix}v1.0/inactiveUserFromTeam?challengerZoneId=${props.eventId}&teamId=${teamId}&userId=${inActive}`;
     axios
@@ -928,6 +976,7 @@ const CreateTeam = (props) => {
 
   const handle = (e) => {
     const {name, checked} = e.target;
+
     if (checked) {
       listarray.push(parseInt(name));
     } else {
@@ -939,7 +988,6 @@ const CreateTeam = (props) => {
       const result = arrayRemove(listarray, name);
       setlistarray(result);
     }
-    console.log('listarray', listarray);
   };
 
   const handleInactive = (event) => {
@@ -951,7 +999,7 @@ const CreateTeam = (props) => {
       listarray.shift(value);
     }
   };
-  console.log(listarray, TL);
+
   // (inActive);
   const selectTeam = (event) => {
     const {name, value} = event.target;
@@ -1168,6 +1216,68 @@ const CreateTeam = (props) => {
 
   return (
     <>
+      {/* leave modal starts */}
+
+      <Modal
+        open={leaveModal}
+        styles={{modal: {borderRadius: '10px', maxWidth: '900px'}}}
+        onClose={closeLeaveModal}
+        center
+        closeIcon={closeIcon}
+      >
+        <CancelIcon
+          style={{
+            position: 'absolute',
+            top: 15,
+            right: 15,
+            color: '#ef5350',
+            cursor: 'pointer',
+          }}
+        />
+
+        <div style={{padding: 25}}>
+          {' '}
+          <h2 style={{marginLeft: 20}}> Are you sure to leave this team ? </h2>
+          <h4 style={{marginTop: -10}}>
+            {' '}
+            NOTE<span style={{color: 'red'}}> * </span> If you leave , You can
+            not join this team again
+          </h4>
+        </div>
+        <div style={{display: 'flex', justifyContent: 'space-around'}}>
+          {' '}
+          <button
+            className="is-success"
+            style={{width: 80, height: 25}}
+            onClick={() => {
+              leaveTeamByUser(
+                props.eventId,
+                leaveId,
+                localStorage.getItem('userId')
+              );
+            }}
+          >
+            {' '}
+            Confirm{' '}
+          </button>{' '}
+          <button
+            style={{
+              width: 80,
+              height: 25,
+              background: '#ef5350',
+              color: 'white',
+            }}
+            onClick={() => {
+              closeLeaveModal();
+            }}
+          >
+            {' '}
+            Cancel
+          </button>
+        </div>
+      </Modal>
+
+      {/* leave modal finish */}
       {editTeam ? (
         <Modal
           open={updateTeam}
@@ -1377,7 +1487,7 @@ const CreateTeam = (props) => {
                                     onClick={() => {
                                       getTeamdata(curelem.id),
                                         // seteditImg(curelem.teamLogo),
-                                        // console.log(curelem.teamLogo);
+
                                         openUpdateTeam();
                                     }}
                                   />
@@ -1449,7 +1559,6 @@ const CreateTeam = (props) => {
                     <TableBody style={{}}>
                       {regUser &&
                         regUser.map((regus, index) => {
-                          // console.log(regus);
                           return (
                             <>
                               <TableRow style={{marginTop: 80}}>
@@ -1672,26 +1781,47 @@ const CreateTeam = (props) => {
             paddingRight: 10,
           }}
         >
-          <div style={{display: 'flex'}}>
-            <img
-              src={
-                teamImg != ''
-                  ? teamImg
-                  : 'https://toppng.com/uploads/preview/free-icons-team-icon-11553443974c84uvvhqrz.png'
-              }
-              style={{
-                width: 60,
-                height: 60,
-                // marginTop: 10,
-                borderRadius: 100,
-                objectFit: 'cover',
-                marginRight: 20,
-              }}
-            />{' '}
-            <div style={{display: 'flex', flexDirection: 'column'}}>
-              <h2> {team} </h2>
-              <h3 style={{marginTop: -15, fontWeight: 'lighter'}}> {tag} </h3>
-            </div>{' '}
+          <div style={{display: 'flex', justifyContent: 'space-between'}}>
+            <div style={{display: 'flex'}}>
+              <img
+                src={
+                  teamImg != ''
+                    ? teamImg
+                    : 'https://toppng.com/uploads/preview/free-icons-team-icon-11553443974c84uvvhqrz.png'
+                }
+                style={{
+                  width: 60,
+                  height: 60,
+                  // marginTop: 10,
+                  borderRadius: 100,
+                  objectFit: 'cover',
+                  marginRight: 20,
+                }}
+              />{' '}
+              <div style={{display: 'flex', flexDirection: 'column'}}>
+                <h2> {team} </h2>
+                <h3 style={{marginTop: -15, fontWeight: 'lighter'}}> {tag} </h3>
+              </div>{' '}
+            </div>
+            <div>
+              {leaveId && (
+                <button
+                  style={{
+                    marginTop: 25,
+                    color: 'white',
+                    background: '#ef5350',
+                    height: 25,
+                    width: 90,
+                  }}
+                  onClick={() => {
+                    openLeaveModal();
+                  }}
+                >
+                  {' '}
+                  Leave Team{' '}
+                </button>
+              )}
+            </div>
           </div>
           <Table
             style={{fontSize: 9}}
@@ -2174,7 +2304,8 @@ const CreateTeam = (props) => {
                         topUser(
                           sessionteamRank.teamName,
                           sessionteamRank.teamMascot,
-                          sessionteamRank.teamTagLine
+                          sessionteamRank.teamTagLine,
+                          sessionteamRank.teamId
                         ),
                           openUserListModal();
                       }}
@@ -2188,6 +2319,7 @@ const CreateTeam = (props) => {
               {stableSort(LeaderboardData, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((item, ind) => {
+                  // console.log(item && item.userList);
                   return (
                     <>
                       <TableRow style={{}} className="teamLeaderboard">
@@ -2263,12 +2395,11 @@ const CreateTeam = (props) => {
                         </TableCell>
                         {!activeInTeam && (
                           <TableCell align="center">
-                            {
-                              (item,
-                              !activeInTeam &&
-                                (item.totalMember < maxteamMember ||
-                                item.totalMember == 0 ? (
-                                  <>
+                            {item &&
+                              (item.totalMember < maxteamMember ||
+                              item.totalMember == 0 ? (
+                                <>
+                                  {!ids.includes(item.teamId) ? (
                                     <button
                                       style={{
                                         height: 25,
@@ -2286,16 +2417,22 @@ const CreateTeam = (props) => {
                                           item.teamTagLine
                                         );
                                         onjoinModal();
+                                        // console.log(
+                                        //   item.usersList.length,
+                                        //   item
+                                        // );
                                       }}
                                     >
                                       {' '}
                                       Join{' '}
                                     </button>
-                                  </>
-                                ) : (
-                                  ''
-                                )))
-                            }{' '}
+                                  ) : (
+                                    ''
+                                  )}
+                                </>
+                              ) : (
+                                ''
+                              ))}{' '}
                           </TableCell>
                         )}
                       </TableRow>

@@ -36,7 +36,7 @@ const ScrollableList = ({
       ? scrollToWidth
       : scrollSource === 'event-gallery'
       ? 1250
-      : 100;
+      : 400;
     if (scrollingDiv) {
       type === 'right'
         ? scrollingDiv.current.scrollBy({
@@ -60,7 +60,7 @@ const ScrollableList = ({
         >
           <ChevronLeftRoundedIcon
             style={{cursor: 'pointer'}}
-            onClick={() => scrollIt('left', scrollingDiv, 100)}
+            onClick={() => scrollIt('left', scrollingDiv, 400)}
           />
         </div>
       )}
@@ -71,7 +71,7 @@ const ScrollableList = ({
         >
           <ChevronRightRoundedIcon
             style={{cursor: 'pointer'}}
-            onClick={() => scrollIt('right', scrollingDiv, 100)}
+            onClick={() => scrollIt('right', scrollingDiv, 400)}
           />
         </div>
       )}

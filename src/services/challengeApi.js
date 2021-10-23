@@ -168,7 +168,7 @@ export const getOldEvents = () => {
 
   console.log(banner, 'banner');
   const URL = isLoggedIn()
-    ? `${urlPrefix}${getAllEvents}?others=sponsor&userId=${localStorage.getItem(
+    ? `${urlPrefix}${getAllEvents}?others=target&userId=${localStorage.getItem(
         'userId'
       )}`
     : `${urlPrefix}${getAllEvents}?others=target&userId=559`;
